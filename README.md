@@ -1,4 +1,4 @@
-# Mohit – Voice OS Developer Portfolio
+# Mohit – Portfolio
 
 A visually rich, interactive React portfolio for **Mohit** (Voice OS Developer | AI Enthusiast | BTech CSE), built with:
 
