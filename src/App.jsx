@@ -1,4 +1,53 @@
 
+
+// ---------------- MOTION PRIMITIVES TEXT EFFECT ----------------
+const defaultTextVariants = {
+  container: {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.04,
+      },
+    },
+  },
+  item: {
+    hidden: { opacity: 0, y: 15, filter: 'blur(3px)' },
+    visible: {
+      opacity: 1,
+      y: 0,
+      filter: 'blur(0px)',
+      transition: {
+        duration: 0.35,
+        ease: 'easeOut',
+      },
+    },
+  },
+};
+
+const TextEffect = ({ children, per = "word", className }) => {
+  const segments = per === "char" ? children.split("") : children.split(" ");
+  return (
+    <motion.span
+      className={className}
+      variants={defaultTextVariants.container}
+      initial="hidden"
+      animate="visible"
+    >
+      {segments.map((seg, idx) => (
+        <motion.span
+          key={idx}
+          className="inline-block"
+          variants={defaultTextVariants.item}
+          style={{ marginRight: per === "word" ? "0.22em" : "0px" }}
+        >
+          {seg}
+        </motion.span>
+      ))}
+    </motion.span>
+  );
+};
+
 import React, {
   useState,
   useEffect,
@@ -52,7 +101,7 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   ResponsiveContainer
-} from "recharts";
+} from "recharts";import avtarImage from "./Avtar.png";
 
 // ---------------- THEME CONTEXT ----------------
 
@@ -192,6 +241,271 @@ const staggerContainer = {
 const glassClasses =
   "backdrop-blur-xl bg-white/60 dark:bg-[#242424]/80 border border-white/30 dark:border-white/5 shadow-[0_20px_60px_rgba(15,23,42,0.25)]";
 
+
+// ---------------- DETAILED SKILLS DATA ----------------
+const detailedSkills = [
+  {
+    id: "java",
+    name: "Java",
+    category: "Backend Development",
+    level: "Advanced",
+    experience: "2023 - Present",
+    description: "Object-oriented software development, enterprise-level architecture, thread safety, and concurrency.",
+    techStack: ["Java Core", "OOPs Design", "Multi-threading", "JDBC / JPA", "Collections Framework"],
+    projects: [
+      { name: "Parking Lot Management System", link: "#projects" },
+      { name: "Travel Memory Manager", link: "#projects" },
+      { name: "AI Interview Assistant", link: "#projects" }
+    ],
+    github: "https://github.com/Mohitbohra18/Parking-Lot-Management-System"
+  },
+  {
+    id: "springboot",
+    name: "Spring Boot",
+    category: "Backend Development",
+    level: "Advanced",
+    experience: "2024 - Present",
+    description: "Building production-ready RESTful APIs and secure microservices with Hibernate and relational datastores.",
+    techStack: ["Spring Boot", "JPA / Hibernate", "Spring Security", "JWT Authentication", "REST APIs"],
+    projects: [
+      { name: "Parking Lot Management System", link: "#projects" },
+      { name: "AI Interview Assistant", link: "#projects" }
+    ],
+    github: "https://github.com/Mohitbohra18/Parking-Lot-Management-System"
+  },
+  {
+    id: "react",
+    name: "React",
+    category: "Frontend Development",
+    level: "Intermediate",
+    experience: "2024 - Present",
+    description: "Building responsive single page applications (SPAs) with complex state management and custom layout hooks.",
+    techStack: ["React.js", "Redux Toolkit", "Framer Motion", "Tailwind CSS", "React Router"],
+    projects: [
+      { name: "Portfolio Website", link: "#projects" },
+      { name: "MANREGA Dashboard", link: "#projects" },
+      { name: "AI Interview Assistant", link: "#projects" }
+    ],
+    github: "https://github.com/Mohitbohra18/Portfolio"
+  },
+  {
+    id: "tensorflow",
+    name: "TensorFlow",
+    category: "AI / ML",
+    level: "Intermediate",
+    experience: "2024 - Present",
+    description: "Designing and training deep learning models, particularly Convolutional Neural Networks (CNNs) for vision and tabular classification.",
+    techStack: ["TensorFlow", "CNN", "Transfer Learning", "Model Training", "Data Preprocessing"],
+    projects: [
+      { name: "Solar Fault Detection", link: "#achievements" },
+      { name: "VisionScribe Image Captioning", link: "#projects" }
+    ],
+    github: "https://github.com/Mohitbohra18/VisionScribe"
+  },
+  {
+    id: "mongodb",
+    name: "MongoDB",
+    category: "Databases",
+    level: "Advanced",
+    experience: "2025 - Present",
+    description: "Schema modeling, indexes, and complex aggregation pipelines for high-performance non-relational database storage.",
+    techStack: ["MongoDB", "NoSQL Schema Design", "Aggregation Framework", "Mongoose ODM", "Index Optimization"],
+    projects: [
+      { name: "MANREGA Management Dashboard", link: "#projects" },
+      { name: "AI Interview Assistant", link: "#projects" }
+    ],
+    github: "https://github.com/Mohitbohra18/Mgnerega-Dashboard"
+  },
+  {
+    id: "systemdesign",
+    name: "System Design",
+    category: "Backend Development",
+    level: "Intermediate",
+    experience: "2024 - Present",
+    description: "Architecting modular backend systems, understanding scalability bottlenecks, API architectures, and SOLID principles.",
+    techStack: ["OOPs Design Patterns", "SOLID Principles", "REST API Design", "ACID Transactions", "Thread Safety"],
+    projects: [
+      { name: "Parking Lot Management System", link: "#projects" },
+      { name: "Campus Navigation System", link: "#projects" }
+    ],
+    github: "https://github.com/Mohitbohra18/Parking-Lot-Management-System"
+  },
+  {
+    id: "python",
+    name: "Python",
+    category: "AI / ML",
+    level: "Advanced",
+    experience: "2023 - Present",
+    description: "Core automation scripts, scientific computing, computer vision libraries, and web integration frameworks.",
+    techStack: ["Python Core", "Scikit-Learn", "Flask", "Pandas & NumPy", "Matplotlib"],
+    projects: [
+      { name: "VisionScribe | AI Image Captioning", link: "#projects" },
+      { name: "Solar Fault Detection Research", link: "#achievements" }
+    ],
+    github: "https://github.com/Mohitbohra18/VisionScribe"
+  },
+  {
+    id: "opencv",
+    name: "OpenCV",
+    category: "AI / ML",
+    level: "Intermediate",
+    experience: "2024 - Present",
+    description: "Image preprocessing filters, edge detection algorithms, and camera vision streams preprocessing.",
+    techStack: ["OpenCV", "Computer Vision", "Image Transformations", "Feature Matching", "Tensor Conversion"],
+    projects: [
+      { name: "VisionScribe Captioning Pipeline", link: "#projects" }
+    ],
+    github: "https://github.com/Mohitbohra18/VisionScribe"
+  },
+  {
+    id: "mysql",
+    name: "MySQL",
+    category: "Databases",
+    level: "Advanced",
+    experience: "2024 - Present",
+    description: "Relational database modeling, complex SQL joins, transaction isolation levels, and ACID compliance.",
+    techStack: ["MySQL", "SQL Queries", "Database Normalization", "Transactions & Locks", "JDBC Integration"],
+    projects: [
+      { name: "Parking Lot Management System", link: "#projects" }
+    ],
+    github: "https://github.com/Mohitbohra18/Parking-Lot-Management-System"
+  },
+  {
+    id: "git",
+    name: "Git & GitHub",
+    category: "Tools & DevOps",
+    level: "Advanced",
+    experience: "2023 - Present",
+    description: "Source code version control, collaborative branch management, pull requests review, and repository release structures.",
+    techStack: ["Git Workflow", "GitHub Actions", "Branching Strategies", "Merge Conflict Resolution", "Repository Config"],
+    projects: [
+      { name: "Portfolio Website & Projects", link: "#projects" }
+    ],
+    github: "https://github.com/Mohitbohra18?tab=repositories"
+  },
+  {
+    id: "linux",
+    name: "Linux & Shell",
+    category: "Tools & DevOps",
+    level: "Intermediate",
+    experience: "2024 - Present",
+    description: "Command line operations, script automation, deployment services configuration, and environment setup.",
+    techStack: ["Linux Commands", "Bash Scripting", "Process Management", "SSH / Key Auth", "Package Managers"],
+    projects: [
+      { name: "VisionScribe Flask Deployment", link: "#projects" }
+    ],
+    github: "https://github.com/Mohitbohra18/VisionScribe"
+  }
+];
+
+// ---------------- MOTION PRIMITIVES SKILL DRAWER ----------------
+const SkillDrawer = ({ skill, onClose }) => {
+  if (!skill) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex justify-end"
+    >
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{ x: 0 }}
+        exit={{ x: "100%" }}
+        transition={{ type: "spring", damping: 25, stiffness: 220 }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md h-full bg-[#F4F0EA] dark:bg-[#111111] border-l border-black/10 dark:border-white/10 p-6 overflow-y-auto flex flex-col justify-between"
+      >
+        <div>
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-black/5 dark:border-white/5 pb-4 mb-5">
+            <div>
+              <span className="text-[0.65rem] font-mono uppercase tracking-[0.2em] text-[#FF3B30]">
+                {skill.category}
+              </span>
+              <h3 className="text-xl font-black uppercase tracking-tight mt-1">{skill.name}</h3>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-2 rounded-full border border-black/10 dark:border-white/10 hover:border-[#FF3B30] text-slate-600 dark:text-slate-300 hover:text-[#FF3B30] transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Details */}
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center gap-4 mb-3 font-mono text-xs">
+                <div>
+                  <span className="text-slate-400 block">Level</span>
+                  <span className="font-semibold text-black dark:text-white uppercase tracking-wider">{skill.level}</span>
+                </div>
+                <div className="h-6 w-px bg-black/10 dark:bg-white/10" />
+                <div>
+                  <span className="text-slate-400 block">Experience</span>
+                  <span className="font-semibold text-black dark:text-white uppercase tracking-wider">{skill.experience}</span>
+                </div>
+              </div>
+              <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
+                {skill.description}
+              </p>
+            </div>
+
+            {/* Core Tech Stack */}
+            <div>
+              <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-3">Core Tech Stack</h4>
+              <div className="flex flex-wrap gap-2">
+                {skill.techStack.map(tech => (
+                  <span key={tech} className="text-xs px-3 py-1 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 font-mono text-slate-700 dark:text-slate-200">
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Projects list */}
+            <div>
+              <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-3">Projects Using {skill.name}</h4>
+              <div className="space-y-2">
+                {skill.projects.map(proj => (
+                  <a
+                    key={proj.name}
+                    href={proj.link}
+                    onClick={() => {
+                      onClose();
+                      scrollToSection(proj.link.substring(1));
+                    }}
+                    className="flex items-center justify-between p-3 rounded-xl border border-black/5 dark:border-white/5 hover:border-[#FF3B30]/30 hover:bg-white/40 dark:hover:bg-black/20 text-sm font-medium transition-all group"
+                  >
+                    <span className="group-hover:text-[#FF3B30] transition-colors">{proj.name}</span>
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#FF3B30] transition-colors" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="border-t border-black/5 dark:border-white/5 pt-4 mt-8 flex items-center justify-between">
+          <a
+            href={skill.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-slate-300 hover:text-[#FF3B30] transition-colors"
+          >
+            <Github className="w-4 h-4" />
+            <span>GitHub Repository</span>
+          </a>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
+
 // ---------------- MAIN APP ----------------
 
 const PortfolioApp = () => {
@@ -205,12 +519,21 @@ const PortfolioApp = () => {
     "contact"
   ];
   const { theme, toggleTheme } = useTheme();
+  
+  useEffect(() => {
+    if (theme === "dark") {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [theme]);
   const activeId = useSectionObserver(sectionIds);
   
   const subtitle = "Full-Stack Developer | AI/ML Enthusiast | Problem Solver";
   const scrollProgress = useScrollProgress();
   const cursorTrail = useCursorTrail(10);
   const [navOpen, setNavOpen] = useState(false);
+  const [selectedSkill, setSelectedSkill] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Projects filter
@@ -243,254 +566,238 @@ const PortfolioApp = () => {
 
   const themeBg =
     theme === "light"
-      ? "bg-[#FDF3E7] text-[#3D3D3D]"
-      : "bg-[#050505] text-[#F5F5F5]";
-  const primaryColor = "#FF8E72";
-  const accentColor = "#FF6F61";
+      ? "bg-[#F4F0EA] text-[#111111]"
+      : "bg-[#111111] text-[#F4F0EA]";
+  const primaryColor = "#FF3B30";
+  const accentColor = "#FFD23F";
 
   // -------- DATA --------
 
   const timelineItems = [
     {
-      title: "Academic Foundation",
-      subtitle: "Completed 10th & 12th with strong foundation in mathematics",
-      date: "2020 - 2022",
-      icon: GraduationCap,
+      title: "ML Foundations & Spam Detection",
+      subtitle: "Built first analytics models and spam detection filters on Jupyter",
+      date: "Dec 2024",
+      icon: Award,
       color: "from-amber-400 to-orange-500"
     },
     {
-      title: "BTech in Computer Science",
-      subtitle: "Began journey into software engineering and CS fundamentals",
-      date: "2022",
-      icon: BookOpen,
-      color: "from-sky-400 to-blue-500"
-    },
-    {
-      title: "Mastered Programming Fundamentals",
-      subtitle: "Python, C++, Java, and data structures & algorithms",
-      date: "2022 - 2023",
-      icon: Code2,
-      color: "from-emerald-400 to-teal-500"
-    },
-    {
-      title: "Full-Stack Development Journey",
-      subtitle: "Built proficiency in React, Node.js, Flask, and databases",
-      date: "2023",
-      icon: Globe,
-      color: "from-purple-400 to-indigo-500"
-    },
-    {
-      title: "Markdown Transpiler Project",
-      subtitle: "Created developer productivity tool for content conversion",
-      date: "2023",
+      title: "Markdown to HTML Transpiler",
+      subtitle: "Engineered high-performance string parser compiler in HTML/JS",
+      date: "Oct 2025",
       icon: Keyboard,
       color: "from-pink-400 to-rose-500"
     },
     {
-      title: "Jarvis Voice Assistant",
-      subtitle: "Developed voice-controlled OS assistant with AI integration",
-      date: "2024",
-      icon: Mic2,
-      color: "from-orange-400 to-red-500"
+      title: "MERN Stack Dashboards",
+      subtitle: "Created MANREGA management dashboard using React, Node, and MongoDB",
+      date: "Dec 2025",
+      icon: Globe,
+      color: "from-purple-400 to-indigo-500"
     },
     {
-      title: "ML Research & Publications",
-      subtitle: "Published papers on solar fault detection and fertilizer systems",
-      date: "2024",
-      icon: Award,
-      color: "from-lime-400 to-emerald-500"
+      title: "Backend API Frameworks Mastery",
+      subtitle: "Mastered Node/Express routing, middleware, and Flask service connections",
+      date: "Feb 2026",
+      icon: Code2,
+      color: "from-emerald-400 to-teal-500"
+    },
+    {
+      title: "Shortest Path Routing Systems",
+      subtitle: "Developed Dijkstra path graph algorithm overlay for Campus Navigation Map",
+      date: "May 2026",
+      icon: BookOpen,
+      color: "from-sky-400 to-blue-500"
+    },
+    {
+      title: "Enterprise SDE & AI Engineering",
+      subtitle: "Published Java Parking system and VisionScribe AI Image caption parser",
+      date: "July 2026",
+      icon: GraduationCap,
+      color: "from-orange-400 to-red-500"
     }
   ];
 
   const skillsData = {
     "Languages & Frameworks": [
+      "Java",
+      "Spring Boot",
       "Python",
       "C++",
-      "Java",
       "JavaScript",
+      "TypeScript",
       "React.js",
       "Node.js",
       "Express.js",
       "Flask",
-      "HTML/CSS",
-      "Redux",
-      "Bootstrap",
-      "TailwindCSS"
+      "TailwindCSS",
+      "Redux"
     ],
     "AI/ML & Data Science": [
       "TensorFlow",
-      "Keras",
+      "PyTorch",
       "Scikit-learn",
       "Pandas",
       "NumPy",
       "OpenCV",
       "Computer Vision",
-      "NLP"
+      "NLP",
+      "HuggingFace API"
     ],
-    "Database & Tools": [
+    "SDE Core & Databases": [
+      "Data Structures & Algorithms (DSA)",
+      "Object-Oriented Programming (OOPs)",
+      "System Design",
+      "RESTful API Development",
+      "JUnit / Unit Testing",
+      "Postman",
       "MongoDB",
       "MySQL",
-      "Mongoose",
-      "Git",
-      "GitHub",
-      "VS Code",
-      "Jupyter Notebook",
-      "Postman",
-      "Linux",
-      "RESTful APIs"
+      "Git & GitHub",
+      "Linux / Shell Scripting"
     ]
   };
 
   const skillRadarData = [
+    { skill: "DSA & OOPs (Java)", value: 92 },
     { skill: "AI/ML & Deep Learning", value: 90 },
-    { skill: "Full-Stack Web Dev", value: 85 },
-    { skill: "Python & Flask", value: 88 },
-    { skill: "React & Frontend", value: 82 },
+    { skill: "System Design & APIs", value: 85 },
+    { skill: "Full-Stack (React/Node)", value: 88 },
     { skill: "Research & Analysis", value: 87 }
   ];
 
   const projects = [
     {
       id: 1,
-      title: "Weather Forecast Website | Real-Time Climate Information Platform",
-      category: ["Web Dev"],
-      badge: "Frontend-focused",
+      title: "VisionScribe | AI-Powered Image Captioning System",
+      category: ["AI/ML", "Backend"],
+      badge: "AI & Vision",
       description:
-        "Developed a responsive weather forecasting web application that provides real-time weather updates based on user location and city search.",
-      tech: ["React, JavaScript, OpenWeather API, HTML, CSS"],
+        "An AI-powered content automation tool that automatically generates context-aware, highly engaging social media captions for uploaded images using computer vision models.",
+      tech: ["Python", "PyTorch", "Flask", "HuggingFace API", "OpenCV"],
       features: [
-        "Developed a responsive weather forecasting web application that provides real-time weather updates based on user location and city search",
-        "Implemented API integration with OpenWeather to fetch live temperature, humidity, wind speed, and weather conditions",
-        "Designed a clean and intuitive user interface using React components, ensuring smooth user experience across devices",
-        "Optimized state management and data rendering for fast, accurate weather information delivery"
+        "Built an automated image-to-text pipeline using HuggingFace vision models to analyze image context",
+        "Designed a clean and responsive interface for image uploading and caption rendering",
+        "Implemented customizable tone selection and automatic hashtag generation algorithms",
+        "Optimized processing latency using efficient PyTorch tensor loaders"
       ],
-      github: "https://github.com/Mohitbohra18/weather-Forcast",
-      stats: { stars: 95, forks: 22, issues: 3 },
+      github: "https://github.com/Mohitbohra18/VisionScribe",
+      stats: { stars: 85, forks: 12, issues: 0 },
       learned: [
-        "Developed a responsive weather forecasting web application that provides real-time weather updates based on user location and city search"
+        "Integrated advanced machine learning APIs and computer vision algorithms in web environments"
       ],
       details:
-        "Designed a clean and intuitive user interface using React components, ensuring smooth user experience across devices"
+        "Leverages deep learning transformers to generate highly contextual descriptors of images, speeding up social media content creation workflows."
     },
     {
       id: 2,
-      title: "Solar Fault Detection System",
-      category: ["AI/ML"],
-      badge: "Research",
+      title: "Parking Lot Management System",
+      category: ["Java / SDE"],
+      badge: "Core Java / OOPs",
       description:
-        "Novel computer vision system for automated detection and classification of solar panel defects using deep learning.",
-      tech: ["Python", "TensorFlow", "Keras", "OpenCV"],
+        "An autonomous parking space allocation and tracking system focusing on optimal spot retrieval, real-time transaction processing, and billing logic.",
+      tech: ["Java", "OOPs Design Patterns", "MySQL", "JDBC", "JUnit"],
       features: [
-        "Automated defect detection in solar panels",
-        "Classification of micro-cracks, hotspots, degradation",
-        "80% reduction in fault detection time",
-        "Peer-reviewed research publication"
+        "Designed allocation engines utilizing design patterns (Singleton, Strategy) for clean, testable logic",
+        "Implemented thread-safe billing and pricing modules with ACID compliance in database operations",
+        "Achieved 95%+ test coverage for system modules using JUnit and Mockito mocks",
+        "Developed custom query handlers using MySQL for vehicle tracking and audit logs"
       ],
-      github: "https://github.com/mohitbohra18",
-      stats: { stars: 128, forks: 34, issues: 5 },
+      github: "https://github.com/Mohitbohra18/Parking-Lot-Management-System",
+      stats: { stars: 124, forks: 22, issues: 1 },
       learned: [
-        "Training deep learning models on image datasets",
-        "Optimizing computer vision pipelines for production",
-        "Writing and presenting academic research papers"
+        "Deepened Java thread safety, transactional database locks, and strict OOP modular design guidelines"
       ],
       details:
-        "Developed and published a deep learning system that identifies solar panel defects with high accuracy. Reduced fault detection time by 80%, enabling proactive maintenance. Research presented at AUTOCOM conference and published in peer-reviewed journal."
+        "A highly robust backend system modeled around clean OOP principles that automates spots retrieval, parking card validation, and payment operations."
     },
     {
       id: 3,
-      title: "Jarvis Voice Assistant",
-      category: ["AI/ML", "Backend"],
-      badge: "Voice OS",
+      title: "AI Interview Assistant",
+      category: ["AI/ML", "Java / SDE"],
+      badge: "AI Product",
       description:
-        "Voice-controlled operating system assistant enabling hands-free execution of system operations through natural language commands.",
-      tech: ["Python", "Flask", "SpeechRecognition", "pyttsx3"],
+        "Personalized mock interview simulator platform utilizing AI to assess candidate speech and provide domain-specific technical feedback.",
+      tech: ["TypeScript", "React", "Node.js", "Express", "MongoDB", "OpenAI API"],
       features: [
-        "Natural language processing for commands",
-        "Application control and file management",
-        "Volume adjustment and web searches",
-        "Hands-free, accessible system control"
+        "Integrated OpenAI GPT models to generate tailored, domain-specific interview questions",
+        "Developed natural language response evaluation engines offering granular communication scores",
+        "Configured high-fidelity speech recognition filters for real-time speech-to-text transcription",
+        "Built detailed user progression charts tracking metrics across multiple rounds"
       ],
-      github: "https://github.com/mohitbohra18",
-      stats: { stars: 156, forks: 28, issues: 4 },
+      github: "https://github.com/Mohitbohra18/AI_Interview-Assistant",
+      stats: { stars: 98, forks: 19, issues: 3 },
       learned: [
-        "Building voice recognition pipelines",
-        "Integrating system-level command execution",
-        "Designing accessible user interfaces"
+        "Designed scalable full-stack typescript components and structured semantic prompts for LLM integrations"
       ],
       details:
-        "Built a comprehensive voice recognition pipeline with Flask backend that executes system operations via natural language. Enhanced accessibility and productivity for users through intuitive voice-based interaction design."
+        "An automated preparation simulator built to evaluate technical candidates behavioral and programming skills with visual analytics."
     },
     {
       id: 4,
-      title: "Markdown-to-HTML Transpiler",
-      category: ["Compilers", "Web Dev"],
-      badge: "Dev Tool",
+      title: "Campus Navigation System (Campus_Nav)",
+      category: ["Java / SDE", "Backend"],
+      badge: "Algorithms",
       description:
-        "Web-based transpiler converting Markdown syntax to clean, responsive HTML markup with error handling and preview.",
-      tech: ["Python", "Flask", "markdown2"],
+        "A smart map navigation system built to calculate shortest paths and route coordinates between different campus buildings and landmarks.",
+      tech: ["JavaScript", "React.js", "Express", "Dijkstra's Algorithm", "HTML5 Canvas"],
       features: [
-        "Complex markdown parsing (tables, code blocks, lists)",
-        "Real-time preview functionality",
-        "Clean, responsive HTML output",
-        "Error handling and validation"
+        "Implemented Dijkstra's pathfinding algorithm on customized weighted graph models",
+        "Designed an interactive HTML5 Canvas mapping layout overlay rendering paths directly on blueprints",
+        "Created RESTful endpoints yielding landmark data with sub-second response times",
+        "Engineered responsive UI controls allowing smooth zooming and coordinates selection"
       ],
-      github: "https://github.com/Mohitbohra18/Transpiler-mdHTML-",
-      stats: { stars: 72, forks: 15, issues: 2 },
+      github: "https://github.com/Mohitbohra18/Campus_Nav",
+      stats: { stars: 67, forks: 8, issues: 0 },
       learned: [
-        "Implementing parser logic for markdown syntax",
-        "Building scalable Flask applications",
-        "Streamlining content publishing workflows"
+        "Mastered graph modeling, coordinate geometry maps rendering, and complex shortest-path routing optimization"
       ],
       details:
-        "Created a web-based transpiler that handles complex markdown elements and converts them to clean HTML. Streamlined workflow for content creators and developers, saving time and reducing errors in documentation and web publishing."
+        "Provides inter and intra-campus route guidance by plotting optimal paths dynamically on graphical campus maps."
     },
     {
       id: 5,
-      title: "MANREGA Management System",
-      category: ["Web Dev", "Backend", "Ongoing"],
-      badge: "Ongoing",
+      title: "MANREGA Management Dashboard",
+      category: ["Web Dev", "Backend"],
+      badge: "MERN Stack",
       description:
-        "Comprehensive management system for MANREGA program workflow, worker tracking, and administrative operations.",
-      tech: ["React", "Node.js", "Express", "MongoDB", "Tailwind"],
+        "A full-stack workflow system designed to digitize administrative records, worker registry, payments history, and role allocations.",
+      tech: ["React.js", "Node.js", "Express", "MongoDB", "TailwindCSS"],
       features: [
-        "Worker registration and tracking",
-        "Project management and allocation",
-        "Payment processing and reporting",
-        "Role-based access control (Admin/Worker)"
+        "Developed secure JWT authentication with custom middleware for role-based permissions",
+        "Built complex aggregation pipelines in MongoDB to calculate payments and registration metrics",
+        "Integrated interactive Chart.js dashboards tracking labor attendance and project budgets",
+        "Designed fully responsive schemas adapting smoothly to desktop and low-end mobile devices"
       ],
       github: "https://github.com/Mohitbohra18/Mgnerega-Dashboard",
-      stats: { stars: 48, forks: 8, issues: 6 },
+      stats: { stars: 88, forks: 15, issues: 4 },
       learned: [
-        "Building complex full-stack applications",
-        "Implementing role-based authentication",
-        "Managing state in large React applications"
+        "Acquired deep MERN dashboard engineering experience, handling transactional schema state across front/backend"
       ],
       details:
-        "Currently developing a full-stack MERN application to digitize MANREGA program operations. Features include worker registration, project allocation, payment processing, and comprehensive reporting dashboards for administrators."
+        "Designed to optimize administrative workflows for public works, replacing paper tracking with a secure digital database."
     },
     {
       id: 6,
-      title: "AI Interview Preparation Assistant",
-      category: ["AI/ML", "Web Dev", "Ongoing"],
-      badge: "Ongoing",
+      title: "Markdown to HTML Transpiler Engine",
+      category: ["Compilers", "Java / SDE"],
+      badge: "Compiler Tool",
       description:
-        "AI-powered platform providing personalized interview preparation with mock interviews, feedback, and skill assessment.",
-      tech: ["Python", "React", "OpenAI API", "Flask", "NLP"],
+        "A parsing compiler utility that reads Markdown syntax text and transpiles it into clean, SEO-friendly HTML structures.",
+      tech: ["HTML", "CSS", "JavaScript", "Regex Engines"],
       features: [
-        "AI-generated interview questions",
-        "Real-time response evaluation",
-        "Personalized feedback and improvement tips",
-        "Track progress across multiple domains"
+        "Built highly optimized regex-based compiler parsing blocks, links, lists, and headings",
+        "Implemented synchronized double-scroll dual view splits for live rendering previews",
+        "Designed plug-in modules to extend transpilation rules without breaking existing tokens",
+        "Optimized compilation buffers to execute sub-millisecond conversions on large MD files"
       ],
-      github: "https://github.com/your-ai-interview-prep",
-      stats: { stars: 89, forks: 19, issues: 8 },
+      github: "https://github.com/Mohitbohra18/Transpiler-mdHTML-",
+      stats: { stars: 54, forks: 10, issues: 2 },
       learned: [
-        "Integrating AI APIs into applications",
-        "Natural language processing for evaluation",
-        "Building interactive learning experiences"
+        "Gained hands-on knowledge in compiler design, parsing strings, state tokens, and DOM rendering syncs"
       ],
       details:
-        "Developing an intelligent interview preparation platform using AI to generate contextual questions, evaluate responses, and provide actionable feedback. Helps candidates prepare for technical and behavioral interviews with personalized learning paths."
+        "Speeds up documentation publishing pipelines by letting writers instantly convert raw markdown files to clean, compliant HTML code."
     }
   ];
 
@@ -565,18 +872,33 @@ const PortfolioApp = () => {
     { label: "All", value: "All" },
     { label: "Languages & Frameworks", value: "Languages & Frameworks" },
     { label: "AI/ML & Data Science", value: "AI/ML & Data Science" },
-    { label: "Database & Tools", value: "Database & Tools" }
+    { label: "SDE Core & Databases", value: "SDE Core & Databases" }
   ];
 
   // Projects filter config - maps display labels to actual category values
   // IMPORTANT: The 'value' field MUST exactly match values in projects[].category arrays
   const projectFilterConfig = [
     { label: "All", value: "All" },
-    { label: "Web Dev", value: "Web Dev" },
-    { label: "AI/ML", value: "AI/ML" },
-    { label: "Backend", value: "Backend" },
-    { label: "Compilers", value: "Compilers" },
-    { label: "Ongoing", value: "Ongoing" }
+    {
+      label: "Java / SDE",
+      value: "Java / SDE"
+    },
+    {
+      label: "AI/ML",
+      value: "AI/ML"
+    },
+    {
+      label: "Backend",
+      value: "Backend"
+    },
+    {
+      label: "Web Dev",
+      value: "Web Dev"
+    },
+    {
+      label: "Compilers",
+      value: "Compilers"
+    }
   ];
 
   // Achievements filter config - maps display labels to actual category values
@@ -709,7 +1031,7 @@ const PortfolioApp = () => {
         className={`${themeBg} min-h-screen flex items-center justify-center relative overflow-hidden`}
       >
         <motion.div
-          className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#FFB4A2_0,_transparent_55%),_radial-gradient(circle_at_bottom,_#FF6F61_0,_transparent_55%)] opacity-60 pointer-events-none"
+          className="absolute inset-0 bg-[radial-gradient(circle_at_top,_#FFD23F_0,_transparent_55%),_radial-gradient(circle_at_bottom,_#FF3B30_0,_transparent_55%)] opacity-60 pointer-events-none"
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.7 }}
           transition={{ duration: 1.2 }}
@@ -721,7 +1043,7 @@ const PortfolioApp = () => {
           transition={{ type: "spring", stiffness: 120, damping: 14 }}
         >
           <motion.div
-            className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#FF8E72] to-[#FF6F61]"
+            className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#FF3B30] to-[#FF3B30]"
             animate={{
               rotate: [0, 10, -10, 0],
               scale: [1, 1.05, 0.95, 1]
@@ -753,7 +1075,7 @@ const PortfolioApp = () => {
           <motion.div
             // eslint-disable-next-line react/no-array-index-key
             key={i}
-            className="w-3 h-3 rounded-full bg-[#FF6F61]/70 shadow-[0_0_16px_rgba(255,111,97,0.9)]"
+            className="w-3 h-3 rounded-full bg-[#FF3B30]/70 shadow-[0_0_16px_rgba(255,111,97,0.9)]"
             style={{
               position: "fixed",
               left: p.x - 6,
@@ -769,7 +1091,7 @@ const PortfolioApp = () => {
       {/* Scroll progress bar */}
       <div className="fixed top-0 left-0 right-0 h-1.5 bg-transparent z-40">
         <motion.div
-          className="h-full bg-gradient-to-r from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2] shadow-[0_0_16px_rgba(255,111,97,0.8)]"
+          className="h-full bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] shadow-[0_0_16px_rgba(255,111,97,0.8)]"
           style={{ width: `${scrollProgress}%` }}
           transition={{ type: "spring", stiffness: 90, damping: 20 }}
         />
@@ -777,9 +1099,9 @@ const PortfolioApp = () => {
 
       {/* Floating gradient blobs */}
       <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-24 -left-10 w-72 h-72 bg-[#FFB4A2]/60 rounded-full blur-3xl mix-blend-multiply dark:opacity-60" />
-        <div className="absolute top-1/2 -right-10 w-80 h-80 bg-[#FF6F61]/50 rounded-full blur-3xl mix-blend-multiply dark:opacity-60" />
-        <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-[#FF8E72]/50 rounded-full blur-3xl mix-blend-multiply dark:opacity-60" />
+        <div className="absolute -top-24 -left-10 w-72 h-72 bg-[#FFD23F]/60 rounded-full blur-3xl mix-blend-multiply dark:opacity-60" />
+        <div className="absolute top-1/2 -right-10 w-80 h-80 bg-[#FF3B30]/50 rounded-full blur-3xl mix-blend-multiply dark:opacity-60" />
+        <div className="absolute bottom-0 left-1/3 w-80 h-80 bg-[#FF3B30]/50 rounded-full blur-3xl mix-blend-multiply dark:opacity-60" />
       </div>
 
       {/* NAVBAR */}
@@ -797,7 +1119,7 @@ const PortfolioApp = () => {
           <button
             type="button"
             onClick={handleLogoClick}
-            className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6F61] rounded-full"
+            className="flex items-center gap-2 group focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF3B30] rounded-full"
           >
             <motion.div
               animate={
@@ -813,9 +1135,9 @@ const PortfolioApp = () => {
                   ? { repeat: Infinity, duration: 1.6, ease: "easeInOut" }
                   : {}
               }
-              className="h-9 w-9 rounded-2xl bg-gradient-to-tr from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2] flex items-center justify-center shadow-[0_0_20px_rgba(255,111,97,0.75)]"
+              className="h-9 w-9 rounded-2xl bg-gradient-to-tr from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] flex items-center justify-center shadow-[0_0_20px_rgba(255,111,97,0.75)]"
             >
-              <Mic2 className="w-5 h-5 text-white" />
+              <div className="w-3 h-3 rounded-full bg-[#FF3B30] animate-ping" />
             </motion.div>
             <div className="flex flex-col items-start leading-tight">
               <span className="text-xs uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">
@@ -824,8 +1146,8 @@ const PortfolioApp = () => {
               <span
                 className={`font-semibold text-sm md:text-base bg-clip-text ${
                   rainbowMode
-                    ? "bg-[conic-gradient(from_0deg,_#FF6F61,_#FFB4A2,_#FF8E72,_#FF6F61)] text-transparent animate-pulse"
-                    : "text-[#3D3D3D] dark:text-white"
+                    ? "bg-[conic-gradient(from_0deg,_#FF3B30,_#FFD23F,_#FF3B30,_#FF3B30)] text-transparent animate-pulse"
+                    : "text-[#111111] dark:text-white"
                 }`}
               >
                 Mohit
@@ -846,9 +1168,9 @@ const PortfolioApp = () => {
                   type="button"
                   key={id}
                   onClick={() => scrollToSection(id)}
-                  className={`relative px-3 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#FF6F61] outline-none ${
+                  className={`relative px-3 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none ${
                     isActive
-                      ? "text-[#1A1A1A] dark:text-black"
+                      ? "text-[#1E1E1E] dark:text-black"
                       : "text-slate-600 dark:text-slate-300"
                   }`}
                 >
@@ -856,7 +1178,7 @@ const PortfolioApp = () => {
                   {isActive && (
                     <motion.span
                       layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2] shadow-[0_0_20px_rgba(255,111,97,0.85)]"
+                      className="absolute inset-0 -z-10 rounded-full bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] shadow-[0_0_20px_rgba(255,111,97,0.85)]"
                       transition={{ type: "spring", stiffness: 250, damping: 20 }}
                     />
                   )}
@@ -865,17 +1187,21 @@ const PortfolioApp = () => {
             })}
           </div>
 
-          {/* Actions */}
+          <div className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-[#FF3B30]/30 px-3 py-1 font-mono text-[0.65rem] uppercase tracking-wider text-[#FF3B30] mr-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF3B30] animate-pulse" />
+              Open to work
+            </div>
+            {/* Actions */}
           <div className="flex items-center gap-2">
             {/* Theme toggle */}
             <button
               type="button"
               onClick={toggleTheme}
-              className="relative flex h-9 w-16 items-center rounded-full bg-slate-200/80 dark:bg-slate-800/80 px-1 shadow-inner overflow-hidden focus-visible:ring-2 focus-visible:ring-[#FF6F61] outline-none"
+              className="relative flex h-9 w-16 items-center rounded-full bg-slate-200/80 dark:bg-slate-800/80 px-1 shadow-inner overflow-hidden focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none"
               aria-label="Toggle dark mode"
             >
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-[#FF8E72] to-[#FF6F61] opacity-40"
+                className="absolute inset-0 bg-gradient-to-r from-[#FF3B30] to-[#FF3B30] opacity-40"
                 animate={{ opacity: isDark ? 0.2 : 0.6 }}
                 transition={{ duration: 0.3 }}
               />
@@ -894,7 +1220,7 @@ const PortfolioApp = () => {
                       exit={{ scale: 0, rotate: 90, opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <Moon className="w-4 h-4 text-[#FFB4A2]" />
+                      <Moon className="w-4 h-4 text-[#FFD23F]" />
                     </motion.div>
                   ) : (
                     <motion.div
@@ -904,7 +1230,7 @@ const PortfolioApp = () => {
                       exit={{ scale: 0, rotate: -90, opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      <Sun className="w-4 h-4 text-[#FF6F61]" />
+                      <Sun className="w-4 h-4 text-[#FF3B30]" />
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -914,7 +1240,7 @@ const PortfolioApp = () => {
             {/* Mobile menu button */}
             <button
               type="button"
-              className="md:hidden relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100/70 dark:bg-slate-900/70 shadow-md focus-visible:ring-2 focus-visible:ring-[#FF6F61] outline-none"
+              className="md:hidden relative inline-flex h-9 w-9 items-center justify-center rounded-full bg-slate-100/70 dark:bg-slate-900/70 shadow-md focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none"
               onClick={() => setNavOpen((o) => !o)}
               aria-label="Toggle navigation menu"
             >
@@ -974,7 +1300,7 @@ const PortfolioApp = () => {
                       }}
                       className={`w-full flex items-center justify-between rounded-2xl px-3 py-2 text-sm font-medium transition-all ${
                         isActive
-                          ? "bg-gradient-to-r from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2] text-black shadow-lg"
+                          ? "bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] text-black shadow-lg"
                           : "text-slate-700 dark:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/70"
                       }`}
                     >
@@ -1003,225 +1329,76 @@ const PortfolioApp = () => {
             animate="visible"
           >
             {/* Left */}
-            <motion.div variants={fadeUp}>
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/70 dark:bg-[#111]/70 px-3 py-1 shadow-lg shadow-slate-900/5 border border-white/60 dark:border-white/10 backdrop-blur-md mb-4">
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-xl bg-gradient-to-tr from-[#FF8E72] to-[#FF6F61] shadow-[0_0_10px_rgba(255,111,97,0.7)]">
-                  <Sparkles className="w-3 h-3 text-white" />
-                </span>
-                <span className="text-xs font-medium uppercase tracking-[0.2em] text-slate-600 dark:text-slate-300">
-                  Aspiring Software Engineer | AI/ML Enthusiast
-                </span>
-              </div>
-
-              <motion.h1
-                className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight mb-4"
-                initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ type: "spring", stiffness: 120, damping: 14 }}
+            <motion.div variants={fadeUp} className="flex flex-col items-start select-none">
+              <motion.div 
+                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.95] text-black dark:text-white uppercase mb-8"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
               >
-                <span className="block text-sm sm:text-base font-semibold text-slate-600 dark:text-slate-300 mb-1">
-                  Hi, I&apos;m
+                <TextEffect per="word" className="block text-black dark:text-white">Developer.</TextEffect>
+                <TextEffect per="word" className="block text-black dark:text-white">Creator. who</TextEffect>
+                <span className="block text-black dark:text-white leading-[1.1] mt-1">
+                  removes <span className="relative inline-block px-2 bg-[#FFD54F] dark:bg-[#D97706] text-black dark:text-white rounded-[4px]">friction.</span>
                 </span>
-                <span className="relative inline-block">
-                  <span className="relative bg-clip-text text-transparent bg-[conic-gradient(from_120deg,_#FF6F61,_#FF8E72,_#FFB4A2,_#FF6F61)] drop-shadow-[0_0_25px_rgba(255,142,114,0.45)]">
-                    Mohit
-                  </span>
-                  <span className="absolute -bottom-1 left-0 w-full h-2 rounded-full bg-gradient-to-r from-[#FF6F61]/40 to-transparent blur-sm" />
-                </span>
-              </motion.h1>
+              </motion.div>
 
-              <motion.p
-                className="max-w-xl text-sm md:text-base text-slate-700 dark:text-slate-200 mb-6"
-                variants={fadeUp}
-              >
-              Results-driven Software Engineer and AI/ML enthusiast with proven expertise in full-stack development, machine learning, and cybersecurity. Published researcher with hands-on experience building scalable applications that solve real-world problems. Demonstrated leadership through technical presentations at national conferences and successful event management. Passionate about leveraging technology to create meaningful impact in agriculture, renewable energy, and automation domains.
-              </motion.p>
+              <p className="font-mono text-xs md:text-sm text-slate-500 dark:text-slate-400 tracking-tight leading-relaxed mb-10 max-w-xl">
+                Product Designer & SDE · Java & Spring Boot · Machine Learning · Full-Stack · Published Researcher
+              </p>
 
-              <motion.p
-                className="text-sm md:text-base font-mono text-[#FF6F61] dark:text-[#FFB4A2] mb-4 h-5"
-                aria-label="Current focus"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-              >
-                {subtitle}
-                <span className="inline-block w-3 h-4 bg-[#FF6F61] dark:bg-[#FFB4A2] ml-0.5 animate-pulse" />
-              </motion.p>
-
-              <motion.div
-                className="flex flex-wrap items-center gap-3 mb-8"
-                variants={fadeUp}
-              >
+              <div className="flex flex-wrap items-center gap-4 mb-10">
                 <button
                   type="button"
                   onClick={() => scrollToSection("projects")}
-                  className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2] px-5 py-2.5 text-sm font-semibold text-black shadow-[0_15px_40px_rgba(255,111,97,0.5)] transition-transform hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-[#FF6F61] outline-none"
+                  className="rounded-full bg-[#FF3B30] text-white hover:bg-[#FF3B30]/90 transition-all font-mono text-xs uppercase tracking-wider px-7 py-3.5 shadow-md flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none"
                 >
-                  <span>View Projects</span>
-                  <ChevronDown className="w-4 h-4" />
-                  <motion.span
-                    className="absolute inset-0 rounded-full border border-white/50"
-                    animate={{
-                      opacity: [0.5, 0.1, 0.5],
-                      scale: [1, 1.03, 1]
-                    }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 1.6,
-                      ease: "easeInOut"
-                    }}
-                  />
+                  See the work ↓
                 </button>
                 <a
                   href="https://drive.google.com/file/d/1TYKaPH-dTNcMNLU0IoDNyWQcZPy3Kp9L/view?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-full border border-[#FF6F61]/60 bg-white/60 dark:bg-black/40 px-4 py-2 text-sm font-medium text-slate-800 dark:text-slate-100 shadow-sm hover:bg-[#FF6F61]/10 hover:border-[#FF6F61] transition-all focus-visible:ring-2 focus-visible:ring-[#FF6F61] outline-none"
+                  className="rounded-full border border-black/10 dark:border-white/10 hover:border-black dark:hover:border-white transition-all font-mono text-xs uppercase tracking-wider px-6 py-3"
                 >
-                  <Download className="w-4 h-4" />
-                  <span>Download Resume</span>
+                  Download Resume
                 </a>
-              </motion.div>
-
-              <motion.div
-                className="grid grid-cols-3 gap-3 max-w-md text-xs md:text-sm"
-                variants={fadeUp}
-              >
-                <div
-                  className={`${glassClasses} rounded-2xl px-3 py-2 flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(15,23,42,0.35)] transition-transform`}
-                >
-                  <span className="text-[0.65rem] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
-                    Focus
-                  </span>
-                  <p className="font-semibold mt-1 leading-snug">
-                    Full-Stack Development
-                    <br />
-                    AI & Machine Learning 
-                  </p>
-                </div>
-                <div
-                  className={`${glassClasses} rounded-2xl px-3 py-2 flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(15,23,42,0.35)] transition-transform`}
-                >
-                  <span className="text-[0.65rem] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
-                    Stack
-                  </span>
-                  <p className="font-semibold mt-1 leading-snug">
-                    Python • Flask • React
-                  </p>
-                </div>
-                <div
-                  className={`${glassClasses} rounded-2xl px-3 py-2 flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(15,23,42,0.35)] transition-transform`}
-                >
-                  <span className="text-[0.65rem] uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
-                    Education
-                  </span>
-                  <p className="font-semibold mt-1 leading-snug">
-                    BTech CSE
-                    <br />
-                    (Current)
-                  </p>
-                </div>
-              </motion.div>
+              </div>
             </motion.div>
 
-            {/* Right: Avatar & visuals */}
+            {/* Right: Avatar Image */}
             <motion.div
               variants={fadeUp}
               className="relative flex justify-center md:justify-end"
             >
               <motion.div
-                className="relative w-60 h-60 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-[2.5rem] bg-gradient-to-br from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2] shadow-[0_30px_80px_rgba(15,23,42,0.65)] overflow-hidden"
-                initial={{ opacity: 0, scale: 0.9, rotate: 6 }}
-                animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                transition={{ type: "spring", stiffness: 110, damping: 16 }}
+                className="relative w-60 h-60 md:w-72 md:h-72 lg:w-80 lg:h-80 rounded-[2.5rem] border border-black/10 dark:border-white/10 p-2 bg-[#F4F0EA] dark:bg-[#111111]"
+                initial={{ opacity: 0, scale: 0.9, rotate: 3 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1, 
+                  rotate: 0,
+                  y: [0, -10, 0]
+                }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 100, 
+                  damping: 15,
+                  y: {
+                    repeat: Infinity,
+                    duration: 6,
+                    ease: "easeInOut"
+                  }
+                }}
+                whileHover={{ scale: 1.02 }}
               >
-                <motion.div
-                  className="absolute inset-5 rounded-[2rem] bg-[#1A1A1A]/95 dark:bg-black/95 border border-white/10 overflow-hidden"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <motion.div
-                      className="relative w-32 h-32 md:w-40 md:h-40 rounded-[1.75rem] bg-gradient-to-br from-[#FF8E72] via-[#FFB4A2] to-[#FF6F61] shadow-[0_30px_60px_rgba(0,0,0,0.8)] flex items-center justify-center"
-                      animate={{
-                        rotateX: [24, 12, 24],
-                        rotateY: [-20, -10, -20],
-                        y: [0, -10, 0]
-                      }}
-                      transition={{
-                        repeat: Infinity,
-                        duration: 7,
-                        ease: "easeInOut"
-                      }}
-                    >
-                      <motion.div
-                        className="w-20 h-20 md:w-24 md:h-24 rounded-3xl bg-[#050505] border border-white/12 flex flex-col items-center justify-center gap-1"
-                        animate={{
-                          boxShadow: [
-                            "0 0 30px rgba(255,111,97,0.8)",
-                            "0 0 45px rgba(255,142,114,0.9)",
-                            "0 0 30px rgba(255,111,97,0.8)"
-                          ]
-                        }}
-                        transition={{
-                          repeat: Infinity,
-                          duration: 3.2,
-                          ease: "easeInOut"
-                        }}
-                      >
-                        <Mic2 className="w-8 h-8 text-[#FFB4A2]" />
-                        <span className="text-[0.65rem] uppercase tracking-[0.18em] text-slate-200">
-                          MOHIT
-                        </span>
-                      </motion.div>
-                    </motion.div>
-                  </div>
-
-                  <motion.div
-                    className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-[0.7rem] text-slate-200"
-                    animate={{ y: [0, -4, 0] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 3,
-                      ease: "easeInOut"
-                    }}
-                  >
-                    <Cpu className="w-3.5 h-3.5 text-[#FFB4A2]" />
-                    <span>AI Enthusiast</span>
-                  </motion.div>
-                  <motion.div
-                    className="absolute bottom-5 left-4 flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-[0.7rem] text-slate-200"
-                    animate={{ y: [0, 5, 0] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 3.4,
-                      ease: "easeInOut",
-                      delay: 0.4
-                    }}
-                  >
-                    <Terminal className="w-3.5 h-3.5 text-[#FF6F61]" />
-                    <span>Web Development</span>
-                  </motion.div>
-                  <motion.div
-                    className="absolute top-16 right-4 flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 border border-white/20 backdrop-blur-sm text-[0.7rem] text-slate-200"
-                    animate={{ y: [0, -3, 0] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 3.6,
-                      ease: "easeInOut",
-                      delay: 0.8
-                    }}
-                  >
-                    <Brain className="w-3.5 h-3.5 text-[#FF8E72]" />
-                    <span>Problem Solver</span>
-                  </motion.div>
-                </motion.div>
-
-                <div className="absolute inset-0 opacity-40">
-                  <div className="absolute inset-x-0 top-1/3 h-px bg-gradient-to-r from-transparent via-white/50 to-transparent" />
-                  <div className="absolute inset-y-0 left-1/3 w-px bg-gradient-to-b from-transparent via-white/40 to-transparent" />
-                  <div className="absolute inset-y-0 right-1/3 w-px bg-gradient-to-b from-transparent via-white/40 to-transparent" />
+                <div className="w-full h-full rounded-[2.2rem] overflow-hidden bg-transparent flex items-center justify-center border border-black/5 dark:border-white/5 shadow-md">
+                  <img 
+                    src={avtarImage} 
+                    alt="Mohit Avatar" 
+                    className="w-full h-full object-cover select-none"
+                    draggable="false"
+                  />
                 </div>
               </motion.div>
             </motion.div>
@@ -1231,7 +1408,7 @@ const PortfolioApp = () => {
           <motion.button
             type="button"
             onClick={() => scrollToSection("about")}
-            className="mt-10 mx-auto flex flex-col items-center gap-2 text-xs text-slate-500 dark:text-slate-400 hover:text-[#FF6F61] transition-colors focus-visible:ring-2 focus-visible:ring-[#FF6F61] outline-none rounded-full w-fit"
+            className="mt-10 mx-auto flex flex-col items-center gap-2 text-xs text-slate-500 dark:text-slate-400 hover:text-[#FF3B30] transition-colors focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none rounded-full w-fit"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 0.9, y: 0 }}
             transition={{ delay: 0.8 }}
@@ -1245,7 +1422,7 @@ const PortfolioApp = () => {
               transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
             >
               <motion.div
-                className="w-1.5 h-2 rounded-full bg-[#FF6F61]"
+                className="w-1.5 h-2 rounded-full bg-[#FF3B30]"
                 animate={{ y: [0, 6, 0], opacity: [1, 0.3, 1] }}
                 transition={{
                   repeat: Infinity,
@@ -1271,12 +1448,12 @@ const PortfolioApp = () => {
           >
             <motion.div className="flex-1" variants={fadeUp}>
               <div className="flex items-center gap-2 mb-3">
-                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#FF8E72] to-[#FF6F61] flex items-center justify-center shadow-lg">
+                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#FF3B30] to-[#FF3B30] flex items-center justify-center shadow-lg">
                   <UserIcon />
                 </div>
                 <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
                   About{" "}
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF6F61] via-[#FF8E72] to-[#FFB4A2]">
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F]">
                     Me
                   </span>
                 </h2>
@@ -1309,10 +1486,10 @@ const PortfolioApp = () => {
               </p>
 
               <motion.div
-                className={`${glassClasses} rounded-2xl px-4 py-3 flex items-start gap-3 border-l-4 border-l-[#FF6F61] mt-2`}
+                className={`${glassClasses} rounded-2xl px-4 py-3 flex items-start gap-3 border-l-4 border-l-[#FF3B30] mt-2`}
                 variants={fadeUp}
               >
-                <Quote className="w-5 h-5 text-[#FF6F61] mt-0.5 shrink-0" />
+                <Quote className="w-5 h-5 text-[#FF3B30] mt-0.5 shrink-0" />
                 <div className="text-xs md:text-sm">
                   <p className="italic text-slate-800 dark:text-slate-100">
                     &quot;The best interfaces are the ones you don&apos;t
@@ -1387,7 +1564,7 @@ const PortfolioApp = () => {
               className={`${glassClasses} rounded-3xl p-5 relative overflow-hidden`}
               variants={fadeUp}
             >
-              <div className="absolute inset-y-4 left-8 w-px bg-gradient-to-b from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2] opacity-60" />
+              <div className="absolute inset-y-4 left-8 w-px bg-gradient-to-b from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] opacity-60" />
               <div className="relative space-y-6 pl-5">
                 {timelineItems.map((item, index) => {
                   const Icon = item.icon;
@@ -1397,7 +1574,7 @@ const PortfolioApp = () => {
                       className="relative flex gap-4 group"
                       variants={fadeUp}
                     >
-                      <div className="absolute -left-[1.6rem] top-2 w-3.5 h-3.5 rounded-full bg-slate-900 dark:bg-slate-100 ring-4 ring-[#FF6F61]/40 flex items-center justify-center">
+                      <div className="absolute -left-[1.6rem] top-2 w-3.5 h-3.5 rounded-full bg-slate-900 dark:bg-slate-100 ring-4 ring-[#FF3B30]/40 flex items-center justify-center">
                         <motion.div
                           className={`w-2 h-2 rounded-full bg-gradient-to-br ${item.color}`}
                           whileHover={{ scale: 1.2 }}
@@ -1422,7 +1599,7 @@ const PortfolioApp = () => {
                         </p>
                         <div className="mt-2 flex items-center gap-2 text-[0.7rem] text-slate-500 dark:text-slate-400">
                           <span className="inline-flex items-center gap-1">
-                            <Stars className="w-3 h-3 text-[#FF6F61]" />
+                            <Stars className="w-3 h-3 text-[#FF3B30]" />
                             <span>
                               Step {index + 1} of {timelineItems.length}
                             </span>
@@ -1436,7 +1613,7 @@ const PortfolioApp = () => {
 
               {/* Progress indicator */}
               <motion.div
-                className="absolute inset-y-4 left-7 w-1 rounded-full bg-[#FF6F61]/30"
+                className="absolute inset-y-4 left-7 w-1 rounded-full bg-[#FF3B30]/30"
                 initial={{ scaleY: 0, originY: 0 }}
                 whileInView={{ scaleY: 1 }}
                 viewport={{ once: true }}
@@ -1451,7 +1628,7 @@ const PortfolioApp = () => {
             >
               <div className="flex items-center justify-between gap-2 mb-3">
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-[#FF6F61]" />
+                  <BarChart3 className="w-5 h-5 text-[#FF3B30]" />
                   <h3 className="text-sm md:text-base font-semibold">
                     Skill Constellation
                   </h3>
@@ -1506,131 +1683,84 @@ const PortfolioApp = () => {
         >
           <SectionHeader
             title="Skills"
-            subtitle="Languages, frameworks, and tools I use to build voice-aware, production-ready systems."
+            subtitle="Technologies I use to build scalable backend systems and AI-powered applications."
             icon={Code2}
           />
 
-          {/* Filters */}
-          <motion.div
-            className="mt-6 flex flex-wrap items-center gap-3 justify-between"
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
+          {/* Featured Skills */}
+          <div className="mt-8 mb-10 select-none">
+            <h4 className="text-[0.65rem] uppercase tracking-[0.2em] text-slate-400 font-mono mb-4">
+              Featured Skills
+            </h4>
             <div className="flex flex-wrap gap-2">
-              {skillFilterConfig.map((filter) => (
+              {detailedSkills.filter(s => ["java", "springboot", "react", "tensorflow", "mongodb", "systemdesign"].includes(s.id)).map(skill => (
                 <button
                   type="button"
-                  key={filter.value}
-                  onClick={() => setSkillFilter(filter.value)}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-medium border bg-white/70 dark:bg-black/40 transition-all hover:-translate-y-0.5 ${
-                    skillFilter === filter.value
-                      ? "border-[#FF6F61] text-[#1A1A1A] dark:text-black bg-gradient-to-r from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2]"
-                      : "border-slate-300/60 dark:border-slate-700/70 text-slate-700 dark:text-slate-200"
-                  }`}
+                  key={skill.id}
+                  onClick={() => setSelectedSkill(skill)}
+                  className="rounded-full border border-black/10 dark:border-white/10 hover:border-[#FF3B30] dark:hover:border-[#FF3B30] hover:text-[#FF3B30] font-mono text-[0.65rem] uppercase tracking-wider px-4 py-2 hover:scale-105 transition-all bg-white/40 dark:bg-black/20"
                 >
-                  {filter.value === "All" ? (
-                    <LayoutGrid className="w-3.5 h-3.5" />
-                  ) : (
-                    <Filter className="w-3.5 h-3.5" />
-                  )}
-                  <span>{filter.label}</span>
+                  {skill.name}
                 </button>
               ))}
             </div>
-            {/* Search */}
-            <div className="relative w-full sm:w-60 md:w-72 mt-1 sm:mt-0">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                placeholder="Search skills..."
-                value={skillSearch}
-                onChange={(e) => setSkillSearch(e.target.value)}
-                className="w-full rounded-full bg-white/80 dark:bg-black/50 border border-slate-200/70 dark:border-slate-700/70 px-8 py-1.5 text-xs text-slate-800 dark:text-slate-50 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF6F61]"
-              />
-            </div>
-          </motion.div>
+          </div>
 
-          {/* Cards */}
-          <motion.div
-            className="mt-6 grid md:grid-cols-2 gap-5"
-            variants={staggerContainer}
-            initial={false} // avoid being stuck in hidden state
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-          >
-            {Object.entries(skillsData).map(([category, list]) => {
-              const show =
-                skillFilter === "All" || skillFilter === category;
-
-              const filteredList = list.filter((s) =>
-                s.toLowerCase().includes(skillSearch.toLowerCase())
-              );
-
-              // Debug log to see how many skills each block has
-              console.log("DEBUG skills block:", {
-                category,
-                show,
-                filteredListLen: filteredList.length
-              });
-
-              if (!show) return null;
+          {/* Categories Grid */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {["Backend Development", "Frontend Development", "AI / ML", "Databases", "Tools & DevOps"].map(category => {
+              const skillsInCategory = detailedSkills.filter(s => s.category === category);
+              if (skillsInCategory.length === 0) return null;
 
               return (
-                <motion.div
-                  key={category}
-                  className={`${glassClasses} rounded-3xl p-4 flex flex-col`}
-                  variants={fadeUp}
-                >
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#FF8E72] to-[#FF6F61] flex items-center justify-center shadow-md text-white">
-                        {category === "Languages & Frameworks" ? (
-                          <Code2 className="w-4 h-4" />
-                        ) : (
-                          <Terminal className="w-4 h-4" />
-                        )}
-                      </span>
-                      <div>
-                        <h3 className="text-sm md:text-base font-semibold">
-                          {category}
-                        </h3>
-                        <p className="text-[0.7rem] text-slate-500 dark:text-slate-400">
-                          {filteredList.length} skills
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex-1 grid grid-cols-2 gap-2 text-xs">
-                    {filteredList.map((skill) => (
+                <div key={category} className="flex flex-col gap-4 select-none">
+                  <h4 className="font-mono text-xs uppercase tracking-[0.2em] text-[#FF3B30] border-b border-black/5 dark:border-white/5 pb-2">
+                    {category}
+                  </h4>
+                  <div className="flex flex-col gap-3">
+                    {skillsInCategory.map(skill => (
                       <motion.div
-                        key={skill}
-                        className="group relative"
-                        whileHover={{ y: -2 }}
+                        key={skill.id}
+                        onClick={() => setSelectedSkill(skill)}
+                        whileHover={{ y: -3 }}
+                        className="p-4 rounded-2xl border border-black/5 dark:border-white/5 bg-white/40 dark:bg-black/20 hover:border-[#FF3B30]/30 hover:shadow-[0_10px_30px_rgba(255,59,48,0.04)] cursor-pointer transition-all group relative overflow-hidden"
                       >
-                        <div
-                          className="relative inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 bg-slate-50/90 dark:bg-black/60 border border-slate-200/80 dark:border-slate-700/70 shadow-sm cursor-default"
-                          title={skill}
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-gradient-to-br from-[#FF8E72] to-[#FF6F61] shadow-[0_0_8px_rgba(255,111,97,0.8)]" />
-                          <span className="text-[0.7rem] font-medium text-slate-800 dark:text-slate-100">
-                            {skill}
+                        <div className="flex items-center justify-between mb-2">
+                          <h5 className="font-bold text-sm tracking-tight">{skill.name}</h5>
+                          <span className={`text-[0.6rem] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                            skill.level === "Advanced" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                          }`}>
+                            {skill.level}
                           </span>
+                        </div>
+                        
+                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-3">
+                          {skill.description}
+                        </p>
+
+                        <div className="flex flex-wrap gap-1.5 mb-1.5">
+                          {skill.techStack.slice(0, 3).map(tech => (
+                            <span key={tech} className="text-[0.6rem] px-2 py-0.5 rounded bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-300 font-mono">
+                              {tech}
+                            </span>
+                          ))}
+                          {skill.techStack.length > 3 && (
+                            <span className="text-[0.6rem] px-1.5 py-0.5 text-slate-400 font-mono">+{skill.techStack.length - 3}</span>
+                          )}
+                        </div>
+
+                        {/* Hover Reveal Details */}
+                        <div className="flex items-center justify-between text-[0.62rem] text-slate-400 font-mono mt-3 pt-3 border-t border-black/5 dark:border-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <span>{skill.projects.length} Projects</span>
+                          <span>{skill.experience}</span>
                         </div>
                       </motion.div>
                     ))}
-                    {filteredList.length === 0 && (
-                      <p className="col-span-2 text-[0.75rem] text-slate-500 dark:text-slate-400 italic">
-                        No skills match &quot;{skillSearch}&quot; in this
-                        category.
-                      </p>
-                    )}
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
         </section>
 
         {/* PROJECTS */}
@@ -1660,7 +1790,7 @@ const PortfolioApp = () => {
                   onClick={() => handleProjectFilterChange(filter.value)}
                   className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 border backdrop-blur-sm transition-all hover:-translate-y-0.5 ${
                     projectFilter === filter.value
-                      ? "bg-gradient-to-r from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2] text-black border-transparent shadow-[0_15px_40px_rgba(255,111,97,0.5)]"
+                      ? "bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] text-black border-transparent shadow-[0_15px_40px_rgba(255,111,97,0.5)]"
                       : "bg-white/60 dark:bg-black/50 border-slate-200/70 dark:border-slate-700/70 text-slate-700 dark:text-slate-200"
                   }`}
                 >
@@ -1701,7 +1831,7 @@ const PortfolioApp = () => {
                     {/* Image placeholder / hero */}
                     <div className="relative h-36 overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-black">
                       <motion.div
-                        className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_#FFB4A2_0,_transparent_60%),_radial-gradient(circle_at_bottom,_#FF6F61_0,_transparent_60%)]"
+                        className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_#FFD23F_0,_transparent_60%),_radial-gradient(circle_at_bottom,_#FF3B30_0,_transparent_60%)]"
                         animate={{
                           backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"]
                         }}
@@ -1716,7 +1846,7 @@ const PortfolioApp = () => {
                         whileHover={{ scale: 1.02 }}
                       >
                         <div className="flex items-center gap-3 text-xs text-slate-200">
-                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF8E72] to-[#FF6F61] text-white shadow-md">
+                          <span className="inline-flex h-6 w-6 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF3B30] to-[#FF3B30] text-white shadow-md">
                             <Code2 className="w-3.5 h-3.5" />
                           </span>
                           <span className="font-medium tracking-wide">
@@ -1746,7 +1876,7 @@ const PortfolioApp = () => {
                       </div>
                       <div className="flex items-center justify-between text-[0.7rem] text-slate-500 dark:text-slate-400">
                         
-                        <span className="inline-flex items-center gap-1 text-xs text-[#FF6F61]">
+                        <span className="inline-flex items-center gap-1 text-xs text-[#FF3B30]">
                           <span>View details</span>
                           <ChevronRight className="w-3 h-3" />
                         </span>
@@ -1760,7 +1890,7 @@ const PortfolioApp = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1.5 text-[0.7rem] font-medium text-slate-800 dark:text-slate-100 px-2.5 py-1 rounded-full bg-white/80 dark:bg-black/60 border border-slate-200/80 dark:border-slate-700/70 hover:border-[#FF6F61] hover:text-[#FF6F61] transition-colors"
+                        className="inline-flex items-center gap-1.5 text-[0.7rem] font-medium text-slate-800 dark:text-slate-100 px-2.5 py-1 rounded-full bg-white/80 dark:bg-black/60 border border-slate-200/80 dark:border-slate-700/70 hover:border-[#FF3B30] hover:text-[#FF3B30] transition-colors"
                       >
                         <Github className="w-3.5 h-3.5" />
                         <span>GitHub</span>
@@ -1771,7 +1901,7 @@ const PortfolioApp = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-1.5 text-[0.7rem] font-medium text-[#FF6F61] px-2.5 py-1 rounded-full border border-[#FF6F61]/70 bg-[#FF6F61]/5 hover:bg-[#FF6F61]/15 transition-colors"
+                          className="inline-flex items-center gap-1.5 text-[0.7rem] font-medium text-[#FF3B30] px-2.5 py-1 rounded-full border border-[#FF3B30]/70 bg-[#FF3B30]/5 hover:bg-[#FF3B30]/15 transition-colors"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                           <span>Live Demo</span>
@@ -1782,6 +1912,17 @@ const PortfolioApp = () => {
                 ))}
           </motion.div>
 
+          
+          {/* Skill drawer */}
+          <AnimatePresence>
+            {selectedSkill && (
+              <SkillDrawer
+                skill={selectedSkill}
+                onClose={() => setSelectedSkill(null)}
+              />
+            )}
+          </AnimatePresence>
+  
           {/* Project modal */}
           <AnimatePresence>
             {selectedProject && (
@@ -1819,7 +1960,7 @@ const PortfolioApp = () => {
                 onClick={() => setAchievementFilter(filter.value)}
                 className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 border backdrop-blur-sm transition-all hover:-translate-y-0.5 ${
                   achievementFilter === filter.value
-                    ? "bg-gradient-to-r from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2] text-black border-transparent shadow-[0_15px_40px_rgba(255,111,97,0.5)]"
+                    ? "bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] text-black border-transparent shadow-[0_15px_40px_rgba(255,111,97,0.5)]"
                     : "bg-white/60 dark:bg-black/50 border-slate-200/70 dark:border-slate-700/70 text-slate-700 dark:text-slate-200"
                 }`}
               >
@@ -1847,7 +1988,7 @@ const PortfolioApp = () => {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-2">
-                      <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[#FF8E72] to-[#FF6F61] flex items-center justify-center shadow-md text-white">
+                      <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[#FF3B30] to-[#FF3B30] flex items-center justify-center shadow-md text-white">
                         <Icon className="w-4.5 h-4.5" />
                       </div>
                       <div>
@@ -1891,7 +2032,7 @@ const PortfolioApp = () => {
               className={`${glassClasses} rounded-3xl p-5 relative overflow-hidden`}
               variants={fadeUp}
             >
-              <div className="absolute inset-0 opacity-40 pointer-events-none bg-[radial-gradient(circle_at_top,_#FFB4A2_0,_transparent_55%),_radial-gradient(circle_at_bottom,_#FF6F61_0,_transparent_55%)]" />
+              <div className="absolute inset-0 opacity-40 pointer-events-none bg-[radial-gradient(circle_at_top,_#FFD23F_0,_transparent_55%),_radial-gradient(circle_at_bottom,_#FF3B30_0,_transparent_55%)]" />
               <div className="relative z-10">
                 <h3 className="text-sm md:text-base font-semibold mb-1.5">
                   Let&apos;s build together
@@ -1947,7 +2088,7 @@ const PortfolioApp = () => {
                   <div className="flex items-center justify-between gap-3 pt-2">
                     <button
                       type="submit"
-                      className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2] px-4 py-1.5 text-xs md:text-sm font-semibold text-black shadow-[0_15px_40px_rgba(255,111,97,0.5)] focus-visible:ring-2 focus-visible:ring-[#FF6F61] outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] px-4 py-1.5 text-xs md:text-sm font-semibold text-black shadow-[0_15px_40px_rgba(255,111,97,0.5)] focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none disabled:opacity-70 disabled:cursor-not-allowed"
                       disabled={
                         formStatus === "loading" || formStatus === "success"
                       }
@@ -1973,7 +2114,7 @@ const PortfolioApp = () => {
                       href="https://drive.google.com/file/d/1eZ4qeh5qBC5AGRADPIDSwwH8O0wOXq4P/view?usp=sharing"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-[0.75rem] md:text-xs px-3 py-1 rounded-full border border-slate-300/80 dark:border-slate-700/80 bg-white/70 dark:bg-black/60 text-slate-800 dark:text-slate-100 hover:border-[#FF6F61] hover:text-[#FF6F61] transition-colors"
+                      className="inline-flex items-center gap-1.5 text-[0.75rem] md:text-xs px-3 py-1 rounded-full border border-slate-300/80 dark:border-slate-700/80 bg-white/70 dark:bg-black/60 text-slate-800 dark:text-slate-100 hover:border-[#FF3B30] hover:text-[#FF3B30] transition-colors"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Download Resume</span>
@@ -1995,7 +2136,7 @@ const PortfolioApp = () => {
               >
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#FF8E72] to-[#FF6F61] flex items-center justify-center text-white shadow-md">
+                    <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#FF3B30] to-[#FF3B30] flex items-center justify-center text-white shadow-md">
                       <Mail className="w-4 h-4" />
                     </div>
                     <div>
@@ -2025,7 +2166,7 @@ const PortfolioApp = () => {
                 className={`${glassClasses} rounded-3xl p-4 flex flex-col gap-3`}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <Stars className="w-4 h-4 text-[#FF6F61]" />
+                  <Stars className="w-4 h-4 text-[#FF3B30]" />
                   <h3 className="text-sm font-semibold">Social Links</h3>
                 </div>
                 <p className="text-[0.7rem] text-slate-500 dark:text-slate-400 mb-1">
@@ -2081,7 +2222,7 @@ const PortfolioApp = () => {
                   type="button"
                   key={id}
                   onClick={() => scrollToSection(id)}
-                  className="px-2 py-0.5 rounded-full text-[0.7rem] text-slate-600 dark:text-slate-300 hover:text-[#FF6F61] hover:bg-[#FF6F61]/10 transition-colors"
+                  className="px-2 py-0.5 rounded-full text-[0.7rem] text-slate-600 dark:text-slate-300 hover:text-[#FF3B30] hover:bg-[#FF3B30]/10 transition-colors"
                 >
                   {id === "home"
                     ? "Home"
@@ -2095,7 +2236,7 @@ const PortfolioApp = () => {
               </p>
               <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-100/70 dark:bg-slate-900/70 border border-slate-200/70 dark:border-slate-800 text-[0.65rem] text-slate-700 dark:text-slate-200">
                 <span>Made with</span>
-                <span className="text-[#FF6F61]">❤️</span>
+                <span className="text-[#FF3B30]">❤️</span>
                 <span>and React</span>
               </div>
             </div>
@@ -2103,7 +2244,7 @@ const PortfolioApp = () => {
           <div className="mt-4 flex items-center justify-between gap-2">
             <div className="w-full h-1 rounded-full bg-slate-100 dark:bg-slate-900 overflow-hidden">
               <motion.div
-                className="h-full bg-gradient-to-r from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2]"
+                className="h-full bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F]"
                 animate={{ x: ["-40%", "120%"] }}
                 transition={{
                   repeat: Infinity,
@@ -2117,7 +2258,7 @@ const PortfolioApp = () => {
               onClick={() =>
                 window.scrollTo({ top: 0, behavior: "smooth" })
               }
-              className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-900 text-white text-[0.7rem] shadow-md hover:bg-[#FF6F61] transition-colors focus-visible:ring-2 focus-visible:ring-[#FF6F61] outline-none ml-2"
+              className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-slate-900 text-white text-[0.7rem] shadow-md hover:bg-[#FF3B30] transition-colors focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none ml-2"
               aria-label="Back to top"
             >
               <ArrowUp className="w-3.5 h-3.5" />
@@ -2140,7 +2281,7 @@ const SectionHeader = ({ title, subtitle, icon: Icon }) => (
     transition={{ duration: 0.4 }}
   >
     <div className="flex items-center gap-2">
-      <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#FF8E72] to-[#FF6F61] flex items-center justify-center shadow-md text-white">
+      <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#FF3B30] to-[#FF3B30] flex items-center justify-center shadow-md text-white">
         <Icon className="w-4 h-4" />
       </div>
       <div>
@@ -2161,7 +2302,7 @@ const InterestCard = ({ icon: Icon, label, description }) => (
     whileHover={{ rotateX: 4, rotateY: -3 }}
   >
     <div className="flex items-center gap-2 mb-1">
-      <div className="h-7 w-7 rounded-xl bg-gradient-to-br from-[#FF8E72] to-[#FF6F61] flex items-center justify-center text-white shadow-md">
+      <div className="h-7 w-7 rounded-xl bg-gradient-to-br from-[#FF3B30] to-[#FF3B30] flex items-center justify-center text-white shadow-md">
         <Icon className="w-3.5 h-3.5" />
       </div>
       <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">
@@ -2213,7 +2354,7 @@ const FormField = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full rounded-2xl border px-3 py-2 text-xs md:text-sm bg-white/80 dark:bg-black/60 text-slate-900 dark:text-slate-50 resize-none focus:outline-none focus:ring-2 focus:ring-[#FF6F61] ${
+        className={`w-full rounded-2xl border px-3 py-2 text-xs md:text-sm bg-white/80 dark:bg-black/60 text-slate-900 dark:text-slate-50 resize-none focus:outline-none focus:ring-2 focus:ring-[#FF3B30] ${
           error
             ? "border-red-400 dark:border-red-500"
             : "border-slate-200/80 dark:border-slate-700/80"
@@ -2226,7 +2367,7 @@ const FormField = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full rounded-2xl border px-3 py-1.5 text-xs md:text-sm bg-white/80 dark:bg-black/60 text-slate-900 dark:text-slate-50 focus:outline-none focus:ring-2 focus:ring-[#FF6F61] ${
+        className={`w-full rounded-2xl border px-3 py-1.5 text-xs md:text-sm bg-white/80 dark:bg-black/60 text-slate-900 dark:text-slate-50 focus:outline-none focus:ring-2 focus:ring-[#FF3B30] ${
           error
             ? "border-red-400 dark:border-red-500"
             : "border-slate-200/80 dark:border-slate-700/80"
@@ -2267,7 +2408,7 @@ const ConfettiOverlay = () => {
             left: `${Math.random() * 100}%`,
             top: -8,
             backgroundColor:
-              ["#FF6F61", "#FF8E72", "#FFB4A2", "#FACC15"][i % 4]
+              ["#FF3B30", "#FF3B30", "#FFD23F", "#FACC15"][i % 4]
           }}
           animate={{
             y: ["0%", "120%"],
@@ -2285,7 +2426,7 @@ const ConfettiOverlay = () => {
 
 const ContactCard = ({ icon: Icon, label, value, href }) => (
   <div className="flex items-center gap-2 rounded-2xl bg-slate-50/90 dark:bg-black/60 border border-slate-200/80 dark:border-slate-800/80 px-3 py-2">
-    <div className="h-7 w-7 rounded-xl bg-gradient-to-br from-[#FF8E72] to-[#FF6F61] flex items-center justify-center text-white shadow-md">
+    <div className="h-7 w-7 rounded-xl bg-gradient-to-br from-[#FF3B30] to-[#FF3B30] flex items-center justify-center text-white shadow-md">
       <Icon className="w-3.5 h-3.5" />
     </div>
     <div className="flex-1">
@@ -2295,7 +2436,7 @@ const ContactCard = ({ icon: Icon, label, value, href }) => (
       {href ? (
         <a
           href={href}
-          className="text-xs font-semibold text-slate-800 dark:text-slate-100 hover:text-[#FF6F61] transition-colors"
+          className="text-xs font-semibold text-slate-800 dark:text-slate-100 hover:text-[#FF3B30] transition-colors"
         >
           {value}
         </a>
@@ -2313,7 +2454,7 @@ const SocialButton = ({ icon: Icon, label, href }) => (
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="group inline-flex items-center gap-1.5 rounded-2xl bg-slate-50/90 dark:bg-black/60 border border-slate-200/80 dark:border-slate-800/80 px-3 py-1.5 text-[0.75rem] text-slate-800 dark:text-slate-100 hover:border-[#FF6F61] hover:text-[#FF6F61] hover:-translate-y-0.5 transition-all"
+    className="group inline-flex items-center gap-1.5 rounded-2xl bg-slate-50/90 dark:bg-black/60 border border-slate-200/80 dark:border-slate-800/80 px-3 py-1.5 text-[0.75rem] text-slate-800 dark:text-slate-100 hover:border-[#FF3B30] hover:text-[#FF3B30] hover:-translate-y-0.5 transition-all"
   >
     <Icon className="w-3.5 h-3.5" />
     <span>{label}</span>
@@ -2356,7 +2497,7 @@ const CountUpBadge = ({ count, delay = 0 }) => {
 
   return (
     <div className="inline-flex items-center gap-1 rounded-full bg-slate-900 text-white px-2.5 py-1 text-[0.65rem] shadow-md">
-      <Stars className="w-3 h-3 text-[#FFB4A2]" />
+      <Stars className="w-3 h-3 text-[#FFD23F]" />
       <span>{value}+</span>
     </div>
   );
@@ -2371,14 +2512,14 @@ const ProjectModal = ({ project, onClose }) => (
     onClick={onClose}
   >
     <motion.div
-      className="relative max-w-2xl w-full rounded-3xl bg-slate-50 dark:bg-[#050505] border border-slate-200/80 dark:border-slate-700/80 shadow-[0_30px_70px_rgba(0,0,0,0.7)] overflow-hidden"
+      className="relative max-w-2xl w-full rounded-3xl bg-slate-50 dark:bg-[#111111] border border-slate-200/80 dark:border-slate-700/80 shadow-[0_30px_70px_rgba(0,0,0,0.7)] overflow-hidden"
       initial={{ scale: 0.92, y: 12, opacity: 0 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.92, y: 12, opacity: 0 }}
       transition={{ type: "spring", stiffness: 180, damping: 20 }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="relative h-28 bg-gradient-to-r from-[#FF8E72] via-[#FF6F61] to-[#FFB4A2]">
+      <div className="relative h-28 bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F]">
         <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_#fff_0,_transparent_60%)]" />
         <div className="absolute inset-x-5 bottom-3 flex items-center justify-between gap-3 text-xs text-white">
           <div className="flex items-center gap-2">
@@ -2408,7 +2549,7 @@ const ProjectModal = ({ project, onClose }) => (
         <p>{project.details}</p>
         <div>
           <h4 className="font-semibold mb-1 flex items-center gap-1">
-            <Stars className="w-3.5 h-3.5 text-[#FF6F61]" />
+            <Stars className="w-3.5 h-3.5 text-[#FF3B30]" />
             <span>Key Features</span>
           </h4>
           <ul className="list-disc ml-5 space-y-1">
@@ -2419,7 +2560,7 @@ const ProjectModal = ({ project, onClose }) => (
         </div>
         <div>
           <h4 className="font-semibold mb-1 flex items-center gap-1">
-            <BookOpen className="w-3.5 h-3.5 text-[#FF6F61]" />
+            <BookOpen className="w-3.5 h-3.5 text-[#FF3B30]" />
             <span>What I Learned</span>
           </h4>
           <ul className="list-disc ml-5 space-y-1">
@@ -2444,7 +2585,7 @@ const ProjectModal = ({ project, onClose }) => (
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 text-white hover:bg-[#FF6F61] transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 text-white hover:bg-[#FF3B30] transition-colors"
             >
               <Github className="w-3.5 h-3.5" />
               <span>View on GitHub</span>

@@ -5,8 +5,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["system-ui", "ui-sans-serif", "Inter", "sans-serif"],
-        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"]
+        sans: ["'Plus Jakarta Sans'", "system-ui", "ui-sans-serif", "sans-serif"],
+        mono: ["'JetBrains Mono'", "ui-monospace", "SFMono-Regular", "monospace"]
       }
     }
   },
