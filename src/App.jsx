@@ -1552,7 +1552,7 @@ const PortfolioApp = () => {
                   See the work ↓
                 </button>
                 <a
-                  href="https://drive.google.com/file/d/1TYKaPH-dTNcMNLU0IoDNyWQcZPy3Kp9L/view?usp=sharing"
+                  href="https://drive.google.com/drive/folders/1VPiDRXoJQ3_uJz0R0gNue_e3n28N9Jk6?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="btn-secondary"
