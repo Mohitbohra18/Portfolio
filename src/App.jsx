@@ -57,7 +57,7 @@ import React, {
   useCallback,
   useMemo
 } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
   Sun,
   Moon,
@@ -101,7 +101,14 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   ResponsiveContainer
-} from "recharts";import avtarImage from "./Avtar.png";
+} from "recharts";
+import avtarImage from "../images/Gemini_Generated_Image_e8ldb6e8ldb6e8ld.png";
+import visionImg from "../images/vision.png";
+import parkingLotImg from "../images/parking lot.png";
+import aiAssistantImg from "../images/ai assistant.png";
+import campusNavImg from "../images/campus nav.png";
+import mgImg from "../images/mg.png";
+import markdownImg from "../images/markdown.png";
 
 // ---------------- THEME CONTEXT ----------------
 
@@ -422,10 +429,10 @@ const SkillDrawer = ({ skill, onClose }) => {
           {/* Header */}
           <div className="flex items-center justify-between border-b border-black/5 dark:border-white/5 pb-4 mb-5">
             <div>
-              <span className="text-[0.65rem] font-mono uppercase tracking-[0.2em] text-[#FF3B30]">
+              <span className="type-label text-[#FF3B30]">
                 {skill.category}
               </span>
-              <h3 className="text-xl font-black uppercase tracking-tight mt-1">{skill.name}</h3>
+              <h3 className="type-display text-xl mt-1">{skill.name}</h3>
             </div>
             <button
               onClick={onClose}
@@ -440,26 +447,26 @@ const SkillDrawer = ({ skill, onClose }) => {
             <div>
               <div className="flex items-center gap-4 mb-3 font-mono text-xs">
                 <div>
-                  <span className="text-slate-400 block">Level</span>
+                  <span className="type-label block">Level</span>
                   <span className="font-semibold text-black dark:text-white uppercase tracking-wider">{skill.level}</span>
                 </div>
                 <div className="h-6 w-px bg-black/10 dark:bg-white/10" />
                 <div>
-                  <span className="text-slate-400 block">Experience</span>
+                  <span className="type-label block">Experience</span>
                   <span className="font-semibold text-black dark:text-white uppercase tracking-wider">{skill.experience}</span>
                 </div>
               </div>
-              <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed">
+              <p className="type-body">
                 {skill.description}
               </p>
             </div>
 
             {/* Core Tech Stack */}
             <div>
-              <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-3">Core Tech Stack</h4>
+              <h4 className="type-label mb-3">Core Tech Stack</h4>
               <div className="flex flex-wrap gap-2">
                 {skill.techStack.map(tech => (
-                  <span key={tech} className="text-xs px-3 py-1 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 font-mono text-slate-700 dark:text-slate-200">
+                  <span key={tech} className="type-chip px-3 py-1 rounded-full bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/5 text-slate-700 dark:text-slate-200">
                     {tech}
                   </span>
                 ))}
@@ -468,7 +475,7 @@ const SkillDrawer = ({ skill, onClose }) => {
 
             {/* Projects list */}
             <div>
-              <h4 className="text-xs font-mono uppercase tracking-wider text-slate-400 mb-3">Projects Using {skill.name}</h4>
+              <h4 className="type-label mb-3">Projects Using {skill.name}</h4>
               <div className="space-y-2">
                 {skill.projects.map(proj => (
                   <a
@@ -478,7 +485,7 @@ const SkillDrawer = ({ skill, onClose }) => {
                       onClose();
                       scrollToSection(proj.link.substring(1));
                     }}
-                    className="flex items-center justify-between p-3 rounded-xl border border-black/5 dark:border-white/5 hover:border-[#FF3B30]/30 hover:bg-white/40 dark:hover:bg-black/20 text-sm font-medium transition-all group"
+                    className="flex items-center justify-between p-3 rounded-xl border border-black/5 dark:border-white/5 hover:border-[#FF3B30]/30 hover:bg-white/40 dark:hover:bg-black/20 type-subheading text-sm transition-all group"
                   >
                     <span className="group-hover:text-[#FF3B30] transition-colors">{proj.name}</span>
                     <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-[#FF3B30] transition-colors" />
@@ -495,13 +502,163 @@ const SkillDrawer = ({ skill, onClose }) => {
             href={skill.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-slate-600 dark:text-slate-300 hover:text-[#FF3B30] transition-colors"
+            className="inline-flex items-center gap-2 type-btn text-slate-600 dark:text-slate-300 hover:text-[#FF3B30] transition-colors"
           >
             <Github className="w-4 h-4" />
             <span>GitHub Repository</span>
           </a>
         </div>
       </motion.div>
+    </motion.div>
+  );
+};
+
+const TimelineFlashcard = ({ item, index, total }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+  const Icon = item.icon;
+  const isEven = index % 2 === 0;
+
+  // GPU-friendly simplified slide up animation (prevents scroll lag)
+  const cardVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 20,
+      scale: 0.97
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: {
+        type: "tween",
+        ease: "easeOut",
+        duration: 0.35
+      }
+    }
+  };
+
+  return (
+    <motion.div
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: false, amount: 0.25 }}
+      variants={cardVariants}
+      className="relative w-full md:w-[350px] group cursor-pointer"
+      onClick={() => setIsFlipped(!isFlipped)}
+    >
+      {/* Timeline indicator circle - placed on left for mobile, alternates for desktop to lock with center line */}
+      <motion.div 
+        className={`absolute top-7 w-5 h-5 rounded-full bg-white dark:bg-[#111111] border-2 border-slate-300 dark:border-slate-800 flex items-center justify-center -translate-y-1/2 z-10
+          left-0 -translate-x-1/2
+          md:left-auto md:translate-x-0
+          ${isEven ? "md:-right-[2.5rem] md:translate-x-1/2" : "md:-left-[2.5rem] md:-translate-x-1/2"}
+        `}
+        initial={{ scale: 0.8, borderColor: "rgba(120,120,120,0.3)" }}
+        whileInView={{ 
+          scale: [0.8, 1.2, 1],
+          borderColor: "#FF3B30",
+          boxShadow: "0 0 10px rgba(255, 59, 48, 0.8)"
+        }}
+        viewport={{ once: false, margin: "-45% 0px -50% 0px" }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+      >
+        <motion.div
+          className={`w-2.5 h-2.5 rounded-full bg-gradient-to-br ${item.color}`}
+        />
+      </motion.div>
+
+      {/* 3D Flip Card Container with increased min-h to prevent text overflow */}
+      <div className="w-full relative min-h-[220px]" style={{ perspective: "1000px" }}>
+        <motion.div
+          className="w-full h-full relative min-h-[220px]"
+          animate={{ rotateY: isFlipped ? 180 : 0 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+          style={{ transformStyle: "preserve-3d" }}
+        >
+          {/* CARD FRONT */}
+          <div
+            className="w-full h-full rounded-2xl bg-slate-50/90 dark:bg-black/40 border border-slate-200/70 dark:border-white/10 px-4 py-3.5 shadow-sm hover:shadow-[0_18px_40px_rgba(15,23,42,0.4)] transition-all flex flex-col justify-between min-h-[220px]"
+            style={{ backfaceVisibility: "hidden" }}
+          >
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-1.5">
+                <div className="flex items-center gap-2">
+                  <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center text-white text-xs shadow-md">
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[0.6rem] font-bold uppercase tracking-wider text-[#FF3B30] font-mono block">
+                      {item.category}
+                    </span>
+                    <h3 className="type-subheading text-xs sm:text-sm font-bold mt-0.5 leading-tight">
+                      {item.title}
+                    </h3>
+                  </div>
+                </div>
+                <span className="type-label shrink-0 text-[0.65rem] sm:text-xs">
+                  {item.date}
+                </span>
+              </div>
+              <p className="type-body-sm text-slate-600 dark:text-slate-300 text-xs mt-1">
+                {item.subtitle}
+              </p>
+            </div>
+            
+            <div className="mt-3 flex items-center justify-between font-mono text-[0.65rem] text-slate-500 dark:text-slate-400">
+              <span className="inline-flex items-center gap-1">
+                <Stars className="w-3.5 h-3.5 text-[#FF3B30]" />
+                <span>
+                  Step {index + 1} of {total}
+                </span>
+              </span>
+              <span className="inline-flex items-center gap-1 text-[#FF3B30] font-semibold animate-pulse">
+                <span>View Details</span>
+                <span>→</span>
+              </span>
+            </div>
+          </div>
+
+          {/* CARD BACK */}
+          <div
+            className="absolute inset-0 w-full h-full rounded-2xl bg-white dark:bg-[#1E1E1E] border border-[#FF3B30]/30 px-4 py-3.5 shadow-md flex flex-col justify-between"
+            style={{
+              backfaceVisibility: "hidden",
+              transform: "rotateY(180deg)"
+            }}
+          >
+            <div>
+              <div className="flex items-center justify-between border-b border-black/5 dark:border-white/5 pb-1 mb-2">
+                <span className="font-bold text-[0.7rem] uppercase tracking-wider text-[#FF3B30] font-mono">
+                  {item.category} - Milestones
+                </span>
+                <span className="text-[0.65rem] font-mono text-slate-400">Back</span>
+              </div>
+              <ul className="space-y-1">
+                {item.details.map((detail, dIdx) => (
+                  <li key={dIdx} className="text-[0.7rem] text-slate-700 dark:text-slate-300 flex items-start gap-1">
+                    <span className="text-[#FFD23F] mt-0.5">•</span>
+                    <span>{detail}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mt-2 pt-2 border-t border-black/5 dark:border-white/5 flex flex-wrap gap-1 items-center justify-between">
+              <div className="flex flex-wrap gap-1">
+                {item.tech.map((t) => (
+                  <span key={t} className="text-[0.55rem] font-mono px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-slate-600 dark:text-slate-300">
+                    {t}
+                  </span>
+                ))}
+              </div>
+              <span className="text-[0.65rem] font-mono text-slate-400 group-hover:text-[#FF3B30] transition-colors flex items-center gap-0.5">
+                <span>Flip back</span>
+                <span>↺</span>
+              </span>
+            </div>
+          </div>
+        </motion.div>
+      </div>
     </motion.div>
   );
 };
@@ -532,6 +689,12 @@ const PortfolioApp = () => {
   const subtitle = "Full-Stack Developer | AI/ML Enthusiast | Problem Solver";
   const scrollProgress = useScrollProgress();
   const cursorTrail = useCursorTrail(10);
+  const timelineRef = useRef(null);
+  const { scrollYProgress: timelineScrollProgress } = useScroll({
+    target: timelineRef,
+    offset: ["start center", "end center"]
+  });
+  const ropeHeight = useTransform(timelineScrollProgress, [0, 1], ["0%", "100%"]);
   const [navOpen, setNavOpen] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -575,46 +738,73 @@ const PortfolioApp = () => {
 
   const timelineItems = [
     {
-      title: "ML Foundations & Spam Detection",
-      subtitle: "Built first analytics models and spam detection filters on Jupyter",
-      date: "Dec 2024",
-      icon: Award,
-      color: "from-amber-400 to-orange-500"
-    },
-    {
-      title: "Markdown to HTML Transpiler",
-      subtitle: "Engineered high-performance string parser compiler in HTML/JS",
-      date: "Oct 2025",
-      icon: Keyboard,
-      color: "from-pink-400 to-rose-500"
-    },
-    {
-      title: "MERN Stack Dashboards",
-      subtitle: "Created MANREGA management dashboard using React, Node, and MongoDB",
-      date: "Dec 2025",
-      icon: Globe,
-      color: "from-purple-400 to-indigo-500"
-    },
-    {
-      title: "Backend API Frameworks Mastery",
-      subtitle: "Mastered Node/Express routing, middleware, and Flask service connections",
-      date: "Feb 2026",
-      icon: Code2,
-      color: "from-emerald-400 to-teal-500"
-    },
-    {
-      title: "Shortest Path Routing Systems",
-      subtitle: "Developed Dijkstra path graph algorithm overlay for Campus Navigation Map",
-      date: "May 2026",
-      icon: BookOpen,
-      color: "from-sky-400 to-blue-500"
-    },
-    {
-      title: "Enterprise SDE & AI Engineering",
-      subtitle: "Published Java Parking system and VisionScribe AI Image caption parser",
-      date: "July 2026",
+      category: "Education",
+      title: "B.Tech in Computer Science & Engineering",
+      subtitle: "Graphic Era Hill University, Dehradun",
+      date: "2022 – 2026",
       icon: GraduationCap,
-      color: "from-orange-400 to-red-500"
+      color: "from-blue-400 to-indigo-500",
+      details: [
+        "Core focus: OOPs, Data Structures & Algorithms, DBMS, Operating Systems, Computer Networks, and SDE foundations",
+        "Participated in technical workshops and university hackathons"
+      ],
+      tech: ["DSA", "OOPs", "DBMS", "OS"]
+    },
+    {
+      category: "Learning & Skills",
+      title: "Core Tech & Frameworks Mastery",
+      subtitle: "Building foundations in frontend, backend, and core algorithms",
+      date: "2022 – Present",
+      icon: Brain,
+      color: "from-amber-400 to-orange-500",
+      details: [
+        "Mastered backend engineering: Java, Spring Boot, Python, FastAPI, and SQL datastores",
+        "Developed frontend fluency in React.js and modern Tailwind responsive styling",
+        "Explored AI integrations, model evaluation, and LLM inference setups"
+      ],
+      tech: ["Java", "Python", "React.js", "FastAPI"]
+    },
+    {
+      category: "Projects",
+      title: "AI-Driven Software Engineering",
+      subtitle: "Shipping end-to-end intelligent systems and REST APIs",
+      date: "2024 – 2026",
+      icon: Rocket,
+      color: "from-pink-400 to-rose-500",
+      details: [
+        "AI Interview Coach: mock platform with local LLMs, Whisper, and resume evaluation",
+        "VisionScribe: CNN-LSTM image captioning system improving BLEU-1 score by 15%+",
+        "Parking Lot System: secure Spring Boot REST API with JWT authorization controls"
+      ],
+      tech: ["React.js", "Spring Boot", "FastAPI", "LLMs"]
+    },
+    {
+      category: "Achievements",
+      title: "Certifications & Community Leadership",
+      subtitle: "Technical validations and social impact service credentials",
+      date: "2025 – 2026",
+      icon: Trophy,
+      color: "from-emerald-400 to-teal-500",
+      details: [
+        "AWS Certified Cloud Practitioner Essentials credential",
+        "Completed Apna College intensive Java and Data Structures training program",
+        "Earned NSS B & C Certificates for active community service and social leadership"
+      ],
+      tech: ["AWS", "Java Core", "NSS Leadership"]
+    },
+    {
+      category: "Current Focus",
+      title: "Next-Gen Architectures & LLMs",
+      subtitle: "Synthesizing high-throughput APIs and local LLM endpoints",
+      date: "2026 – Present",
+      icon: Zap,
+      color: "from-orange-400 to-red-500",
+      details: [
+        "Building end-to-end full stack software with integrated LLM endpoints",
+        "Refining FastAPI service connections and Spring Boot microservice architectures",
+        "Primary stack: Java, Spring Boot, Python, FastAPI, React.js, and SQL databases"
+      ],
+      tech: ["Spring Boot", "FastAPI", "React", "LLMs"]
     }
   ];
 
@@ -672,6 +862,7 @@ const PortfolioApp = () => {
       title: "VisionScribe | AI-Powered Image Captioning System",
       category: ["AI/ML", "Backend"],
       badge: "AI & Vision",
+      img: visionImg,
       description:
         "An AI-powered content automation tool that automatically generates context-aware, highly engaging social media captions for uploaded images using computer vision models.",
       tech: ["Python", "PyTorch", "Flask", "HuggingFace API", "OpenCV"],
@@ -694,6 +885,7 @@ const PortfolioApp = () => {
       title: "Parking Lot Management System",
       category: ["Java / SDE"],
       badge: "Core Java / OOPs",
+      img: parkingLotImg,
       description:
         "An autonomous parking space allocation and tracking system focusing on optimal spot retrieval, real-time transaction processing, and billing logic.",
       tech: ["Java", "OOPs Design Patterns", "MySQL", "JDBC", "JUnit"],
@@ -716,6 +908,7 @@ const PortfolioApp = () => {
       title: "AI Interview Assistant",
       category: ["AI/ML", "Java / SDE"],
       badge: "AI Product",
+      img: aiAssistantImg,
       description:
         "Personalized mock interview simulator platform utilizing AI to assess candidate speech and provide domain-specific technical feedback.",
       tech: ["TypeScript", "React", "Node.js", "Express", "MongoDB", "OpenAI API"],
@@ -738,6 +931,7 @@ const PortfolioApp = () => {
       title: "Campus Navigation System (Campus_Nav)",
       category: ["Java / SDE", "Backend"],
       badge: "Algorithms",
+      img: campusNavImg,
       description:
         "A smart map navigation system built to calculate shortest paths and route coordinates between different campus buildings and landmarks.",
       tech: ["JavaScript", "React.js", "Express", "Dijkstra's Algorithm", "HTML5 Canvas"],
@@ -760,6 +954,7 @@ const PortfolioApp = () => {
       title: "MANREGA Management Dashboard",
       category: ["Web Dev", "Backend"],
       badge: "MERN Stack",
+      img: mgImg,
       description:
         "A full-stack workflow system designed to digitize administrative records, worker registry, payments history, and role allocations.",
       tech: ["React.js", "Node.js", "Express", "MongoDB", "TailwindCSS"],
@@ -782,6 +977,7 @@ const PortfolioApp = () => {
       title: "Markdown to HTML Transpiler Engine",
       category: ["Compilers", "Java / SDE"],
       badge: "Compiler Tool",
+      img: markdownImg,
       description:
         "A parsing compiler utility that reads Markdown syntax text and transpiles it into clean, SEO-friendly HTML structures.",
       tech: ["HTML", "CSS", "JavaScript", "Regex Engines"],
@@ -1051,10 +1247,10 @@ const PortfolioApp = () => {
             transition={{ repeat: Infinity, duration: 1.6, ease: "easeInOut" }}
           />
           <div>
-            <p className="text-sm uppercase tracking-[0.25em] text-slate-500 dark:text-slate-400 font-semibold">
+            <p className="type-label">
               Booting Portfolio 
             </p>
-            <p className="mt-1 font-semibold text-lg">
+            <p className="mt-1 type-subheading text-lg">
               Loading Mohit&apos;s universe<span className="animate-pulse">
                 ...
               </span>
@@ -1140,11 +1336,11 @@ const PortfolioApp = () => {
               <div className="w-3 h-3 rounded-full bg-[#FF3B30] animate-ping" />
             </motion.div>
             <div className="flex flex-col items-start leading-tight">
-              <span className="text-xs uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">
+              <span className="type-label">
                 Portfolio 
               </span>
               <span
-                className={`font-semibold text-sm md:text-base bg-clip-text ${
+                className={`type-subheading text-sm md:text-base bg-clip-text ${
                   rainbowMode
                     ? "bg-[conic-gradient(from_0deg,_#FF3B30,_#FFD23F,_#FF3B30,_#FF3B30)] text-transparent animate-pulse"
                     : "text-[#111111] dark:text-white"
@@ -1168,7 +1364,7 @@ const PortfolioApp = () => {
                   type="button"
                   key={id}
                   onClick={() => scrollToSection(id)}
-                  className={`relative px-3 py-1.5 rounded-full text-xs font-medium tracking-wide transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none ${
+                  className={`relative px-3 py-1.5 rounded-full type-nav transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none ${
                     isActive
                       ? "text-[#1E1E1E] dark:text-black"
                       : "text-slate-600 dark:text-slate-300"
@@ -1298,9 +1494,9 @@ const PortfolioApp = () => {
                         scrollToSection(id);
                         setNavOpen(false);
                       }}
-                      className={`w-full flex items-center justify-between rounded-2xl px-3 py-2 text-sm font-medium transition-all ${
+                      className={`w-full flex items-center justify-between rounded-full px-3 py-2 type-nav transition-all ${
                         isActive
-                          ? "bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] text-black shadow-lg"
+                          ? "bg-[#FF3B30] text-white shadow-md"
                           : "text-slate-700 dark:text-slate-200 hover:bg-slate-100/70 dark:hover:bg-slate-800/70"
                       }`}
                     >
@@ -1331,7 +1527,7 @@ const PortfolioApp = () => {
             {/* Left */}
             <motion.div variants={fadeUp} className="flex flex-col items-start select-none">
               <motion.div 
-                className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.95] text-black dark:text-white uppercase mb-8"
+                className="type-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl text-black dark:text-white mb-8"
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
@@ -1343,7 +1539,7 @@ const PortfolioApp = () => {
                 </span>
               </motion.div>
 
-              <p className="font-mono text-xs md:text-sm text-slate-500 dark:text-slate-400 tracking-tight leading-relaxed mb-10 max-w-xl">
+              <p className="type-tagline mb-10 max-w-xl">
                 Product Designer & SDE · Java & Spring Boot · Machine Learning · Full-Stack · Published Researcher
               </p>
 
@@ -1351,7 +1547,7 @@ const PortfolioApp = () => {
                 <button
                   type="button"
                   onClick={() => scrollToSection("projects")}
-                  className="rounded-full bg-[#FF3B30] text-white hover:bg-[#FF3B30]/90 transition-all font-mono text-xs uppercase tracking-wider px-7 py-3.5 shadow-md flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none"
+                  className="btn-primary"
                 >
                   See the work ↓
                 </button>
@@ -1359,7 +1555,7 @@ const PortfolioApp = () => {
                   href="https://drive.google.com/file/d/1TYKaPH-dTNcMNLU0IoDNyWQcZPy3Kp9L/view?usp=sharing"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full border border-black/10 dark:border-white/10 hover:border-black dark:hover:border-white transition-all font-mono text-xs uppercase tracking-wider px-6 py-3"
+                  className="btn-secondary"
                 >
                   Download Resume
                 </a>
@@ -1408,7 +1604,7 @@ const PortfolioApp = () => {
           <motion.button
             type="button"
             onClick={() => scrollToSection("about")}
-            className="mt-10 mx-auto flex flex-col items-center gap-2 text-xs text-slate-500 dark:text-slate-400 hover:text-[#FF3B30] transition-colors focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none rounded-full w-fit"
+            className="mt-10 mx-auto flex flex-col items-center gap-2 font-mono text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-[#FF3B30] transition-colors focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none rounded-full w-fit"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 0.9, y: 0 }}
             transition={{ delay: 0.8 }}
@@ -1451,7 +1647,7 @@ const PortfolioApp = () => {
                 <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-[#FF3B30] to-[#FF3B30] flex items-center justify-center shadow-lg">
                   <UserIcon />
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
+                <h2 className="type-heading text-2xl md:text-3xl">
                   About{" "}
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F]">
                     Me
@@ -1459,7 +1655,7 @@ const PortfolioApp = () => {
                 </h2>
               </div>
 
-              <p className="text-sm md:text-base text-slate-700 dark:text-slate-200 mb-4">
+              <p className="type-body mb-4">
                 I&apos;m Mohit, a{" "}
                 <span className="font-semibold">
                   BTech Computer Science student
@@ -1469,12 +1665,12 @@ const PortfolioApp = () => {
                 and modern frontend technologies to craft cohesive, delightful
                 experiences.
               </p>
-              <p className="text-sm md:text-base text-slate-700 dark:text-slate-200 mb-4">
+              <p className="type-body mb-4">
                 I love designing systems that feel intuitive to humans:
                 interfaces you can talk to, applications that anticipate your
                 next step, and tools that remove friction rather than add it.
               </p>
-              <p className="text-sm md:text-base text-slate-700 dark:text-slate-200 mb-5">
+              <p className="type-body mb-5">
                 Right now, I&apos;m deepening my understanding of{" "}
                 <span className="font-semibold">
                   machine learning, web designing and large-scale
@@ -1490,12 +1686,12 @@ const PortfolioApp = () => {
                 variants={fadeUp}
               >
                 <Quote className="w-5 h-5 text-[#FF3B30] mt-0.5 shrink-0" />
-                <div className="text-xs md:text-sm">
-                  <p className="italic text-slate-800 dark:text-slate-100">
+                <div>
+                  <p className="type-body-sm italic text-slate-800 dark:text-slate-100">
                     &quot;The best interfaces are the ones you don&apos;t
                     notice—because they adapt to you.&quot;
                   </p>
-                  <p className="mt-1 text-[0.7rem] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                  <p className="type-meta mt-1">
                     My guiding principle in life &amp; AI design
                   </p>
                 </div>
@@ -1553,124 +1749,43 @@ const PortfolioApp = () => {
             icon={ClockIcon}
           />
           <motion.div
-            className="relative mt-8 grid md:grid-cols-[1fr,0.9fr] gap-8"
+            className="relative mt-8 max-w-4xl mx-auto"
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.15 }}
           >
             {/* Timeline */}
             <motion.div
+              ref={timelineRef}
               className={`${glassClasses} rounded-3xl p-5 relative overflow-hidden`}
               variants={fadeUp}
             >
-              <div className="absolute inset-y-4 left-8 w-px bg-gradient-to-b from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] opacity-60" />
-              <div className="relative space-y-6 pl-5">
+              {/* Static Background Rope */}
+              <div className="absolute inset-y-6 left-[2.25rem] md:left-1/2 md:-translate-x-1/2 w-1 bg-black/5 dark:bg-white/10 rounded-full" />
+
+              {/* Dynamic Growing Scroll-Linked Rope */}
+              <motion.div
+                style={{ height: ropeHeight }}
+                className="absolute top-6 left-[2.25rem] md:left-1/2 md:-translate-x-1/2 w-1 bg-gradient-to-b from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] rounded-full origin-top shadow-[0_0_8px_rgba(255,59,48,0.65)]"
+              />
+
+              <div className="relative flex flex-col gap-12 w-full pl-8 md:pl-0">
                 {timelineItems.map((item, index) => {
-                  const Icon = item.icon;
+                  const isEven = index % 2 === 0;
                   return (
-                    <motion.div
+                    <div
                       key={item.title}
-                      className="relative flex gap-4 group"
-                      variants={fadeUp}
+                      className={`flex w-full md:w-[calc(50%+2.5rem)] ${isEven ? "self-start justify-end md:pr-[2.5rem]" : "self-end justify-start md:pl-[2.5rem]"}`}
                     >
-                      <div className="absolute -left-[1.6rem] top-2 w-3.5 h-3.5 rounded-full bg-slate-900 dark:bg-slate-100 ring-4 ring-[#FF3B30]/40 flex items-center justify-center">
-                        <motion.div
-                          className={`w-2 h-2 rounded-full bg-gradient-to-br ${item.color}`}
-                          whileHover={{ scale: 1.2 }}
-                        />
-                      </div>
-                      <div className="w-full rounded-2xl bg-slate-50/80 dark:bg-black/40 border border-slate-200/70 dark:border-white/10 px-4 py-3.5 shadow-sm group-hover:shadow-[0_18px_40px_rgba(15,23,42,0.4)] transition-all group-hover:-translate-y-1">
-                        <div className="flex items-center justify-between gap-2 mb-1.5">
-                          <div className="flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center text-white text-xs shadow-md">
-                              <Icon className="w-4 h-4" />
-                            </div>
-                            <h3 className="font-semibold text-sm md:text-[0.92rem]">
-                              {item.title}
-                            </h3>
-                          </div>
-                          <span className="text-[0.65rem] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                            {item.date}
-                          </span>
-                        </div>
-                        <p className="text-xs md:text-sm text-slate-600 dark:text-slate-200">
-                          {item.subtitle}
-                        </p>
-                        <div className="mt-2 flex items-center gap-2 text-[0.7rem] text-slate-500 dark:text-slate-400">
-                          <span className="inline-flex items-center gap-1">
-                            <Stars className="w-3 h-3 text-[#FF3B30]" />
-                            <span>
-                              Step {index + 1} of {timelineItems.length}
-                            </span>
-                          </span>
-                        </div>
-                      </div>
-                    </motion.div>
+                      <TimelineFlashcard
+                        item={item}
+                        index={index}
+                        total={timelineItems.length}
+                      />
+                    </div>
                   );
                 })}
-              </div>
-
-              {/* Progress indicator */}
-              <motion.div
-                className="absolute inset-y-4 left-7 w-1 rounded-full bg-[#FF3B30]/30"
-                initial={{ scaleY: 0, originY: 0 }}
-                whileInView={{ scaleY: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-              />
-            </motion.div>
-
-            {/* Radar skills */}
-            <motion.div
-              className={`${glassClasses} rounded-3xl p-5 flex flex-col`}
-              variants={fadeUp}
-            >
-              <div className="flex items-center justify-between gap-2 mb-3">
-                <div className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-[#FF3B30]" />
-                  <h3 className="text-sm md:text-base font-semibold">
-                    Skill Constellation
-                  </h3>
-                </div>
-                <span className="text-[0.7rem] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
-                  Powered by Recharts
-                </span>
-              </div>
-              <p className="text-xs md:text-sm text-slate-600 dark:text-slate-200 mb-4">
-                A snapshot of how my strengths distribute across
-                backend, frontend, algorithms, and tooling.
-              </p>
-              <div className="flex-1 min-h-[220px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart data={skillRadarData}>
-                    <PolarGrid
-                      stroke={isDark ? "#4b5563" : "#cbd5f5"}
-                      strokeOpacity={0.8}
-                    />
-                    <PolarAngleAxis
-                      dataKey="skill"
-                      tick={{
-                        fill: isDark ? "#e5e7eb" : "#1f2933",
-                        fontSize: 11
-                      }}
-                    />
-                    <PolarRadiusAxis
-                      angle={30}
-                      domain={[0, 100]}
-                      tick={{
-                        fill: isDark ? "#9ca3af" : "#4b5563",
-                        fontSize: 10
-                      }}
-                    />
-                    <Radar
-                      dataKey="value"
-                      stroke={accentColor}
-                      fill={accentColor}
-                      fillOpacity={0.45}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
               </div>
             </motion.div>
           </motion.div>
@@ -1689,7 +1804,7 @@ const PortfolioApp = () => {
 
           {/* Featured Skills */}
           <div className="mt-8 mb-10 select-none">
-            <h4 className="text-[0.65rem] uppercase tracking-[0.2em] text-slate-400 font-mono mb-4">
+            <h4 className="type-label mb-4">
               Featured Skills
             </h4>
             <div className="flex flex-wrap gap-2">
@@ -1698,7 +1813,7 @@ const PortfolioApp = () => {
                   type="button"
                   key={skill.id}
                   onClick={() => setSelectedSkill(skill)}
-                  className="rounded-full border border-black/10 dark:border-white/10 hover:border-[#FF3B30] dark:hover:border-[#FF3B30] hover:text-[#FF3B30] font-mono text-[0.65rem] uppercase tracking-wider px-4 py-2 hover:scale-105 transition-all bg-white/40 dark:bg-black/20"
+                  className="rounded-full border border-black/10 dark:border-white/10 hover:border-[#FF3B30] dark:hover:border-[#FF3B30] hover:text-[#FF3B30] type-chip px-4 py-2 hover:scale-105 transition-all bg-white/40 dark:bg-black/20"
                 >
                   {skill.name}
                 </button>
@@ -1714,7 +1829,7 @@ const PortfolioApp = () => {
 
               return (
                 <div key={category} className="flex flex-col gap-4 select-none">
-                  <h4 className="font-mono text-xs uppercase tracking-[0.2em] text-[#FF3B30] border-b border-black/5 dark:border-white/5 pb-2">
+                  <h4 className="type-label text-[#FF3B30] border-b border-black/5 dark:border-white/5 pb-2">
                     {category}
                   </h4>
                   <div className="flex flex-col gap-3">
@@ -1726,31 +1841,31 @@ const PortfolioApp = () => {
                         className="p-4 rounded-2xl border border-black/5 dark:border-white/5 bg-white/40 dark:bg-black/20 hover:border-[#FF3B30]/30 hover:shadow-[0_10px_30px_rgba(255,59,48,0.04)] cursor-pointer transition-all group relative overflow-hidden"
                       >
                         <div className="flex items-center justify-between mb-2">
-                          <h5 className="font-bold text-sm tracking-tight">{skill.name}</h5>
-                          <span className={`text-[0.6rem] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                          <h5 className="type-subheading text-sm">{skill.name}</h5>
+                          <span className={`type-chip px-2 py-0.5 rounded-full ${
                             skill.level === "Advanced" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-blue-500/10 text-blue-600 dark:text-blue-400"
                           }`}>
                             {skill.level}
                           </span>
                         </div>
                         
-                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mb-3">
+                        <p className="type-body-sm text-xs md:text-xs line-clamp-2 mb-3 text-slate-500 dark:text-slate-400">
                           {skill.description}
                         </p>
 
                         <div className="flex flex-wrap gap-1.5 mb-1.5">
                           {skill.techStack.slice(0, 3).map(tech => (
-                            <span key={tech} className="text-[0.6rem] px-2 py-0.5 rounded bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-300 font-mono">
+                            <span key={tech} className="type-chip px-2 py-0.5 rounded bg-black/5 dark:bg-white/5 text-slate-600 dark:text-slate-300">
                               {tech}
                             </span>
                           ))}
                           {skill.techStack.length > 3 && (
-                            <span className="text-[0.6rem] px-1.5 py-0.5 text-slate-400 font-mono">+{skill.techStack.length - 3}</span>
+                            <span className="font-mono text-[0.6rem] px-1.5 py-0.5 text-slate-400">+{skill.techStack.length - 3}</span>
                           )}
                         </div>
 
                         {/* Hover Reveal Details */}
-                        <div className="flex items-center justify-between text-[0.62rem] text-slate-400 font-mono mt-3 pt-3 border-t border-black/5 dark:border-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-between font-mono text-[0.62rem] text-slate-400 mt-3 pt-3 border-t border-black/5 dark:border-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
                           <span>{skill.projects.length} Projects</span>
                           <span>{skill.experience}</span>
                         </div>
@@ -1782,22 +1897,22 @@ const PortfolioApp = () => {
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            <div className="flex flex-wrap gap-2 text-xs">
+            <div className="flex flex-wrap gap-2">
               {projectFilterConfig.map((filter) => (
                 <button
                   type="button"
                   key={filter.value}
                   onClick={() => handleProjectFilterChange(filter.value)}
-                  className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 border backdrop-blur-sm transition-all hover:-translate-y-0.5 ${
+                  className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 border backdrop-blur-sm transition-all hover:-translate-y-0.5 type-chip ${
                     projectFilter === filter.value
-                      ? "bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] text-black border-transparent shadow-[0_15px_40px_rgba(255,111,97,0.5)]"
-                      : "bg-white/60 dark:bg-black/50 border-slate-200/70 dark:border-slate-700/70 text-slate-700 dark:text-slate-200"
+                      ? "bg-[#FF3B30] text-white border-transparent shadow-md"
+                      : "bg-white/60 dark:bg-black/50 border-black/10 dark:border-white/10 text-slate-700 dark:text-slate-200"
                   }`}
                 >
                   <span>{filter.label}</span>
                   {projectFilter === filter.value && (
                     <motion.span
-                      className="w-1.5 h-1.5 rounded-full bg-black/80"
+                      className="w-1.5 h-1.5 rounded-full bg-white"
                       layoutId="project-filter-dot"
                     />
                   )}
@@ -1830,29 +1945,38 @@ const PortfolioApp = () => {
                   >
                     {/* Image placeholder / hero */}
                     <div className="relative h-36 overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-black">
+                      {proj.img ? (
+                        <img 
+                          src={proj.img} 
+                          alt={proj.title} 
+                          className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500" 
+                        />
+                      ) : (
+                        <motion.div
+                          className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_#FFD23F_0,_transparent_60%),_radial-gradient(circle_at_bottom,_#FF3B30_0,_transparent_60%)]"
+                          animate={{
+                            backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"]
+                          }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 8,
+                            ease: "linear"
+                          }}
+                        />
+                      )}
+                      <div className="absolute inset-0 bg-black/30" />
                       <motion.div
-                        className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_#FFD23F_0,_transparent_60%),_radial-gradient(circle_at_bottom,_#FF3B30_0,_transparent_60%)]"
-                        animate={{
-                          backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"]
-                        }}
-                        transition={{
-                          repeat: Infinity,
-                          duration: 8,
-                          ease: "linear"
-                        }}
-                      />
-                      <motion.div
-                        className="absolute inset-4 rounded-2xl border border-white/10 flex items-center justify-center"
+                        className="absolute inset-4 rounded-2xl border border-white/10 flex items-center justify-center backdrop-blur-[2px]"
                         whileHover={{ scale: 1.02 }}
                       >
-                        <div className="flex items-center gap-3 text-xs text-slate-200">
+                        <div className="flex items-center gap-3 font-mono text-xs text-slate-200">
                           <span className="inline-flex h-6 w-6 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF3B30] to-[#FF3B30] text-white shadow-md">
                             <Code2 className="w-3.5 h-3.5" />
                           </span>
-                          <span className="font-medium tracking-wide">
+                          <span className="type-subheading tracking-wide text-slate-200">
                             {proj.title}
                           </span>
-                          <span className="px-2 py-0.5 rounded-full bg-black/40 text-[0.65rem] uppercase tracking-[0.12em]">
+                          <span className="px-2 py-0.5 rounded-full bg-black/40 type-chip">
                             {proj.badge}
                           </span>
                         </div>
@@ -1861,22 +1985,22 @@ const PortfolioApp = () => {
 
                     {/* Body */}
                     <div className="p-4 flex-1 flex flex-col gap-3">
-                      <p className="text-xs md:text-sm text-slate-700 dark:text-slate-200">
+                      <p className="type-body-sm">
                         {proj.description}
                       </p>
                       <div className="flex flex-wrap gap-1.5">
                         {proj.tech.map((t) => (
                           <span
                             key={t}
-                            className="text-[0.65rem] px-2 py-0.5 rounded-full bg-white/80 dark:bg-black/60 border border-slate-200/80 dark:border-slate-700/70 text-slate-800 dark:text-slate-100"
+                            className="type-chip px-2 py-0.5 rounded-full bg-white/80 dark:bg-black/60 border border-black/10 dark:border-white/10 text-slate-800 dark:text-slate-100"
                           >
                             {t}
                           </span>
                         ))}
                       </div>
-                      <div className="flex items-center justify-between text-[0.7rem] text-slate-500 dark:text-slate-400">
+                      <div className="flex items-center justify-between font-mono text-[0.7rem] text-slate-500 dark:text-slate-400">
                         
-                        <span className="inline-flex items-center gap-1 text-xs text-[#FF3B30]">
+                        <span className="inline-flex items-center gap-1 type-btn text-[#FF3B30]">
                           <span>View details</span>
                           <ChevronRight className="w-3 h-3" />
                         </span>
@@ -1890,7 +2014,7 @@ const PortfolioApp = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={(e) => e.stopPropagation()}
-                        className="inline-flex items-center gap-1.5 text-[0.7rem] font-medium text-slate-800 dark:text-slate-100 px-2.5 py-1 rounded-full bg-white/80 dark:bg-black/60 border border-slate-200/80 dark:border-slate-700/70 hover:border-[#FF3B30] hover:text-[#FF3B30] transition-colors"
+                        className="inline-flex items-center gap-1.5 type-btn text-slate-800 dark:text-slate-100 px-2.5 py-1 rounded-full bg-white/80 dark:bg-black/60 border border-black/10 dark:border-white/10 hover:border-[#FF3B30] hover:text-[#FF3B30] transition-colors"
                       >
                         <Github className="w-3.5 h-3.5" />
                         <span>GitHub</span>
@@ -1901,7 +2025,7 @@ const PortfolioApp = () => {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-1.5 text-[0.7rem] font-medium text-[#FF3B30] px-2.5 py-1 rounded-full border border-[#FF3B30]/70 bg-[#FF3B30]/5 hover:bg-[#FF3B30]/15 transition-colors"
+                          className="inline-flex items-center gap-1.5 type-btn text-[#FF3B30] px-2.5 py-1 rounded-full border border-[#FF3B30]/70 bg-[#FF3B30]/5 hover:bg-[#FF3B30]/15 transition-colors"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                           <span>Live Demo</span>
@@ -1947,7 +2071,7 @@ const PortfolioApp = () => {
 
           {/* Filters */}
           <motion.div
-            className="mt-6 flex flex-wrap gap-2 text-xs"
+            className="mt-6 flex flex-wrap gap-2"
             variants={fadeUp}
             initial="hidden"
             whileInView="visible"
@@ -1958,10 +2082,10 @@ const PortfolioApp = () => {
                 type="button"
                 key={filter.value}
                 onClick={() => setAchievementFilter(filter.value)}
-                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 border backdrop-blur-sm transition-all hover:-translate-y-0.5 ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 border backdrop-blur-sm transition-all hover:-translate-y-0.5 type-chip ${
                   achievementFilter === filter.value
-                    ? "bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] text-black border-transparent shadow-[0_15px_40px_rgba(255,111,97,0.5)]"
-                    : "bg-white/60 dark:bg-black/50 border-slate-200/70 dark:border-slate-700/70 text-slate-700 dark:text-slate-200"
+                    ? "bg-[#FF3B30] text-white border-transparent shadow-md"
+                    : "bg-white/60 dark:bg-black/50 border-black/10 dark:border-white/10 text-slate-700 dark:text-slate-200"
                 }`}
               >
                 <Stars className="w-3.5 h-3.5" />
@@ -1992,15 +2116,15 @@ const PortfolioApp = () => {
                         <Icon className="w-4.5 h-4.5" />
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold">{a.title}</h3>
-                        <p className="text-[0.7rem] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                        <h3 className="type-subheading text-sm">{a.title}</h3>
+                        <p className="type-label">
                           {a.badge}
                         </p>
                       </div>
                     </div>
                     <CountUpBadge count={a.count} delay={0.2 + i * 0.1} />
                   </div>
-                  <p className="mt-3 text-xs md:text-sm text-slate-700 dark:text-slate-200">
+                  <p className="mt-3 type-body-sm">
                     {a.details}
                   </p>
                 </motion.div>
@@ -2034,10 +2158,10 @@ const PortfolioApp = () => {
             >
               <div className="absolute inset-0 opacity-40 pointer-events-none bg-[radial-gradient(circle_at_top,_#FFD23F_0,_transparent_55%),_radial-gradient(circle_at_bottom,_#FF3B30_0,_transparent_55%)]" />
               <div className="relative z-10">
-                <h3 className="text-sm md:text-base font-semibold mb-1.5">
+                <h3 className="type-subheading text-sm md:text-base mb-1.5">
                   Let&apos;s build together
                 </h3>
-                <p className="text-xs md:text-sm text-slate-700 dark:text-slate-200 mb-4">
+                <p className="type-body-sm mb-4">
                   Whether it&apos;s a Voice OS experiment, AI/ML project, or
                   full-stack product, I&apos;m always excited about bold ideas.
                 </p>
@@ -2088,7 +2212,7 @@ const PortfolioApp = () => {
                   <div className="flex items-center justify-between gap-3 pt-2">
                     <button
                       type="submit"
-                      className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] px-4 py-1.5 text-xs md:text-sm font-semibold text-black shadow-[0_15px_40px_rgba(255,111,97,0.5)] focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                      className="btn-primary px-5 py-2.5 disabled:opacity-70 disabled:cursor-not-allowed"
                       disabled={
                         formStatus === "loading" || formStatus === "success"
                       }
@@ -2114,7 +2238,7 @@ const PortfolioApp = () => {
                       href="https://drive.google.com/file/d/1eZ4qeh5qBC5AGRADPIDSwwH8O0wOXq4P/view?usp=sharing"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-[0.75rem] md:text-xs px-3 py-1 rounded-full border border-slate-300/80 dark:border-slate-700/80 bg-white/70 dark:bg-black/60 text-slate-800 dark:text-slate-100 hover:border-[#FF3B30] hover:text-[#FF3B30] transition-colors"
+                      className="btn-secondary px-4 py-2"
                     >
                       <Download className="w-3.5 h-3.5" />
                       <span>Download Resume</span>
@@ -2140,8 +2264,8 @@ const PortfolioApp = () => {
                       <Mail className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold">Direct Contact</h3>
-                      <p className="text-[0.7rem] text-slate-500 dark:text-slate-400">
+                      <h3 className="type-subheading text-sm">Direct Contact</h3>
+                      <p className="type-tagline text-[0.7rem] md:text-[0.7rem]">
                         Prefer a quick email or DM
                       </p>
                     </div>
@@ -2167,9 +2291,9 @@ const PortfolioApp = () => {
               >
                 <div className="flex items-center gap-2 mb-1">
                   <Stars className="w-4 h-4 text-[#FF3B30]" />
-                  <h3 className="text-sm font-semibold">Social Links</h3>
+                  <h3 className="type-subheading text-sm">Social Links</h3>
                 </div>
-                <p className="text-[0.7rem] text-slate-500 dark:text-slate-400 mb-1">
+                <p className="type-tagline text-[0.7rem] md:text-[0.7rem] mb-1">
                   Let&apos;s stay in touch across platforms.
                 </p>
                 <div className="grid grid-cols-2 gap-2 text-xs">
@@ -2209,10 +2333,10 @@ const PortfolioApp = () => {
         <div className="max-w-6xl mx-auto px-4 py-6 text-xs md:text-sm">
           <div className="grid sm:grid-cols-3 gap-4 items-start">
             <div className="space-y-1">
-              <p className="font-semibold text-slate-800 dark:text-slate-100">
+              <p className="type-subheading text-slate-800 dark:text-slate-100">
                 Mohit
               </p>
-              <p className="text-[0.7rem] text-slate-500 dark:text-slate-400">
+              <p className="type-tagline text-[0.7rem] md:text-[0.7rem]">
                 AI Enthusiast • BTech CSE
               </p>
             </div>
@@ -2222,7 +2346,7 @@ const PortfolioApp = () => {
                   type="button"
                   key={id}
                   onClick={() => scrollToSection(id)}
-                  className="px-2 py-0.5 rounded-full text-[0.7rem] text-slate-600 dark:text-slate-300 hover:text-[#FF3B30] hover:bg-[#FF3B30]/10 transition-colors"
+                  className="px-2 py-0.5 rounded-full type-nav text-slate-600 dark:text-slate-300 hover:text-[#FF3B30] hover:bg-[#FF3B30]/10 transition-colors"
                 >
                   {id === "home"
                     ? "Home"
@@ -2231,10 +2355,10 @@ const PortfolioApp = () => {
               ))}
             </div>
             <div className="flex items-center justify-between gap-2 sm:justify-end">
-              <p className="text-[0.7rem] text-slate-500 dark:text-slate-400">
+              <p className="font-mono text-[0.7rem] text-slate-500 dark:text-slate-400">
                 &copy; {new Date().getFullYear()} Mohit. All rights reserved.
               </p>
-              <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-100/70 dark:bg-slate-900/70 border border-slate-200/70 dark:border-slate-800 text-[0.65rem] text-slate-700 dark:text-slate-200">
+              <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-slate-100/70 dark:bg-slate-900/70 border border-black/10 dark:border-white/10 font-mono text-[0.65rem] text-slate-700 dark:text-slate-200">
                 <span>Made with</span>
                 <span className="text-[#FF3B30]">❤️</span>
                 <span>and React</span>
@@ -2285,10 +2409,10 @@ const SectionHeader = ({ title, subtitle, icon: Icon }) => (
         <Icon className="w-4 h-4" />
       </div>
       <div>
-        <h2 className="text-xl md:text-2xl font-bold tracking-tight">
+        <h2 className="type-heading text-2xl md:text-3xl">
           {title}
         </h2>
-        <p className="text-[0.7rem] md:text-xs text-slate-500 dark:text-slate-400">
+        <p className="type-tagline mt-1 max-w-xl">
           {subtitle}
         </p>
       </div>
@@ -2305,11 +2429,11 @@ const InterestCard = ({ icon: Icon, label, description }) => (
       <div className="h-7 w-7 rounded-xl bg-gradient-to-br from-[#FF3B30] to-[#FF3B30] flex items-center justify-center text-white shadow-md">
         <Icon className="w-3.5 h-3.5" />
       </div>
-      <p className="text-xs font-semibold text-slate-900 dark:text-slate-50">
+      <p className="type-subheading text-xs">
         {label}
       </p>
     </div>
-    <p className="text-[0.7rem] text-slate-600 dark:text-slate-300">
+    <p className="type-body-sm text-[0.7rem] md:text-[0.7rem]">
       {description}
     </p>
   </motion.div>
@@ -2321,11 +2445,11 @@ const StatCard = ({ label, value, sub }) => (
  px-3 py-2.5 shadow-[0_18px_40px_rgba(15,23,42,0.75)] flex flex-col"
     whileHover={{ y: -2, scale: 1.02 }}
   >
-    <span className="text-[0.65rem] uppercase tracking-[0.16em] text-slate-400">
+    <span className="type-label text-slate-400">
       {label}
     </span>
-    <span className="text-lg font-bold mt-1">{value}</span>
-    <span className="text-[0.7rem] text-slate-400">{sub}</span>
+    <span className="type-heading text-lg mt-1 text-slate-100">{value}</span>
+    <span className="font-mono text-[0.7rem] text-slate-400">{sub}</span>
   </motion.div>
 );
 
@@ -2343,7 +2467,7 @@ const FormField = ({
   <div className="space-y-1">
     <label
       htmlFor={id}
-      className="block text-[0.7rem] font-medium text-slate-700 dark:text-slate-200"
+      className="block type-label text-slate-700 dark:text-slate-200"
     >
       {label}
     </label>
@@ -2354,7 +2478,7 @@ const FormField = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full rounded-2xl border px-3 py-2 text-xs md:text-sm bg-white/80 dark:bg-black/60 text-slate-900 dark:text-slate-50 resize-none focus:outline-none focus:ring-2 focus:ring-[#FF3B30] ${
+        className={`w-full rounded-2xl border px-3 py-2 font-sans text-xs md:text-sm bg-white/80 dark:bg-black/60 text-slate-900 dark:text-slate-50 resize-none focus:outline-none focus:ring-2 focus:ring-[#FF3B30] ${
           error
             ? "border-red-400 dark:border-red-500"
             : "border-slate-200/80 dark:border-slate-700/80"
@@ -2367,7 +2491,7 @@ const FormField = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className={`w-full rounded-2xl border px-3 py-1.5 text-xs md:text-sm bg-white/80 dark:bg-black/60 text-slate-900 dark:text-slate-50 focus:outline-none focus:ring-2 focus:ring-[#FF3B30] ${
+        className={`w-full rounded-2xl border px-3 py-1.5 font-sans text-xs md:text-sm bg-white/80 dark:bg-black/60 text-slate-900 dark:text-slate-50 focus:outline-none focus:ring-2 focus:ring-[#FF3B30] ${
           error
             ? "border-red-400 dark:border-red-500"
             : "border-slate-200/80 dark:border-slate-700/80"
@@ -2375,7 +2499,7 @@ const FormField = ({
       />
     )}
     {error && (
-      <p className="text-[0.65rem] text-red-500 mt-0.5" aria-live="polite">
+      <p className="font-mono text-[0.65rem] text-red-500 mt-0.5" aria-live="polite">
         {error}
       </p>
     )}
@@ -2430,18 +2554,18 @@ const ContactCard = ({ icon: Icon, label, value, href }) => (
       <Icon className="w-3.5 h-3.5" />
     </div>
     <div className="flex-1">
-      <p className="text-[0.7rem] text-slate-500 dark:text-slate-400">
+      <p className="type-label">
         {label}
       </p>
       {href ? (
         <a
           href={href}
-          className="text-xs font-semibold text-slate-800 dark:text-slate-100 hover:text-[#FF3B30] transition-colors"
+          className="type-subheading text-xs text-slate-800 dark:text-slate-100 hover:text-[#FF3B30] transition-colors"
         >
           {value}
         </a>
       ) : (
-        <p className="text-xs font-semibold text-slate-800 dark:text-slate-100">
+        <p className="type-subheading text-xs text-slate-800 dark:text-slate-100">
           {value}
         </p>
       )}
@@ -2454,7 +2578,7 @@ const SocialButton = ({ icon: Icon, label, href }) => (
     href={href}
     target="_blank"
     rel="noopener noreferrer"
-    className="group inline-flex items-center gap-1.5 rounded-2xl bg-slate-50/90 dark:bg-black/60 border border-slate-200/80 dark:border-slate-800/80 px-3 py-1.5 text-[0.75rem] text-slate-800 dark:text-slate-100 hover:border-[#FF3B30] hover:text-[#FF3B30] hover:-translate-y-0.5 transition-all"
+    className="group inline-flex items-center gap-1.5 rounded-full bg-slate-50/90 dark:bg-black/60 border border-slate-200/80 dark:border-slate-800/80 px-3 py-1.5 type-btn text-slate-800 dark:text-slate-100 hover:border-[#FF3B30] hover:text-[#FF3B30] hover:-translate-y-0.5 transition-all"
   >
     <Icon className="w-3.5 h-3.5" />
     <span>{label}</span>
@@ -2519,21 +2643,30 @@ const ProjectModal = ({ project, onClose }) => (
       transition={{ type: "spring", stiffness: 180, damping: 20 }}
       onClick={(e) => e.stopPropagation()}
     >
-      <div className="relative h-28 bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F]">
-        <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_#fff_0,_transparent_60%)]" />
-        <div className="absolute inset-x-5 bottom-3 flex items-center justify-between gap-3 text-xs text-white">
+      <div className="relative h-40 bg-gradient-to-r from-[#FF3B30] via-[#FF3B30] to-[#FFD23F] overflow-hidden">
+        {project.img ? (
+          <img 
+            src={project.img} 
+            alt={project.title} 
+            className="w-full h-full object-cover opacity-75" 
+          />
+        ) : (
+          <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_#fff_0,_transparent_60%)]" />
+        )}
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-x-5 bottom-3 flex items-center justify-between gap-3 text-xs text-white z-10">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-xl bg-black/20 flex items-center justify-center">
               <Code2 className="w-4 h-4" />
             </div>
             <div>
-              <p className="font-semibold text-sm">{project.title}</p>
-              <p className="text-[0.7rem] uppercase tracking-[0.18em]">
+              <p className="type-subheading text-sm text-white">{project.title}</p>
+              <p className="type-meta text-white/80">
                 {project.badge}
               </p>
             </div>
           </div>
-          <div className="inline-flex items-center gap-2">
+          <div className="inline-flex items-center gap-2 font-mono">
             <span className="inline-flex items-center gap-0.5">
               <Github className="w-3.5 h-3.5" />
               <span>{project.stats.stars}★</span>
@@ -2545,10 +2678,10 @@ const ProjectModal = ({ project, onClose }) => (
           </div>
         </div>
       </div>
-      <div className="p-5 space-y-3 text-xs md:text-sm text-slate-700 dark:text-slate-200">
+      <div className="p-5 space-y-3 type-body-sm">
         <p>{project.details}</p>
         <div>
-          <h4 className="font-semibold mb-1 flex items-center gap-1">
+          <h4 className="type-subheading mb-1 flex items-center gap-1 text-sm">
             <Stars className="w-3.5 h-3.5 text-[#FF3B30]" />
             <span>Key Features</span>
           </h4>
@@ -2559,7 +2692,7 @@ const ProjectModal = ({ project, onClose }) => (
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold mb-1 flex items-center gap-1">
+          <h4 className="type-subheading mb-1 flex items-center gap-1 text-sm">
             <BookOpen className="w-3.5 h-3.5 text-[#FF3B30]" />
             <span>What I Learned</span>
           </h4>
@@ -2574,18 +2707,18 @@ const ProjectModal = ({ project, onClose }) => (
             {project.tech.map((t) => (
               <span
                 key={t}
-                className="text-[0.65rem] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700/80 text-slate-800 dark:text-slate-100"
+                className="type-chip px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-900 border border-black/10 dark:border-white/10 text-slate-800 dark:text-slate-100"
               >
                 {t}
               </span>
             ))}
           </div>
-          <div className="flex gap-2 text-[0.7rem]">
+          <div className="flex gap-2">
             <a
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 text-white hover:bg-[#FF3B30] transition-colors"
+              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FF3B30] text-white type-btn hover:bg-[#FF3B30]/90 transition-colors"
             >
               <Github className="w-3.5 h-3.5" />
               <span>View on GitHub</span>

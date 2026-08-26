@@ -14,6 +14,66 @@ body {
   @apply font-sans antialiased;
 }
 
+/* ------------------------------------------------------------------
+   Typography system (hero-aligned)
+   - Headings / titles  → Plus Jakarta Sans (font-sans)
+   - Body paragraphs    → Plus Jakarta Sans
+   - Labels / buttons / meta / nav / tags → JetBrains Mono (font-mono)
+------------------------------------------------------------------ */
+@layer components {
+  .type-display {
+    @apply font-sans font-black uppercase tracking-tighter leading-[0.95];
+  }
+
+  .type-heading {
+    @apply font-sans font-bold tracking-tight text-black dark:text-white;
+  }
+
+  .type-subheading {
+    @apply font-sans font-semibold tracking-tight text-black dark:text-white;
+  }
+
+  .type-body {
+    @apply font-sans text-sm md:text-base text-slate-700 dark:text-slate-200 leading-relaxed;
+  }
+
+  .type-body-sm {
+    @apply font-sans text-xs md:text-sm text-slate-600 dark:text-slate-200 leading-relaxed;
+  }
+
+  .type-tagline {
+    @apply font-mono text-xs md:text-sm text-slate-500 dark:text-slate-400 tracking-tight leading-relaxed;
+  }
+
+  .type-label {
+    @apply font-mono text-[0.65rem] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400;
+  }
+
+  .type-meta {
+    @apply font-mono text-[0.7rem] uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400;
+  }
+
+  .type-nav {
+    @apply font-mono text-xs uppercase tracking-wider;
+  }
+
+  .type-btn {
+    @apply font-mono text-xs uppercase tracking-wider;
+  }
+
+  .type-chip {
+    @apply font-mono text-[0.65rem] uppercase tracking-wider;
+  }
+
+  .btn-primary {
+    @apply rounded-full bg-[#FF3B30] text-white hover:bg-[#FF3B30]/90 transition-all font-mono text-xs uppercase tracking-wider px-7 py-3.5 shadow-md inline-flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-[#FF3B30] outline-none;
+  }
+
+  .btn-secondary {
+    @apply rounded-full border border-black/10 dark:border-white/10 hover:border-black dark:hover:border-white transition-all font-mono text-xs uppercase tracking-wider px-6 py-3 inline-flex items-center gap-2;
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -31,5 +91,3 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #FFD23F;
 }
-
-
